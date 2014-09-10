@@ -214,28 +214,37 @@
 			<string>keyword.operator.assignment.beancount</string>
 		</dict>
 		<dict>
+			<key>begin</key>
+			<string>(\{)</string>
+			<key>beginCaptures</key>
+			<dict>
+				<key>1</key>
+				<dict>
+					<key>name</key>
+					<string>keyword.operator.assignment.beancount</string>
+				</dict>
+			</dict>
 			<key>comment</key>
 			<string>Lot assignment</string>
-			<key>match</key>
-			<string>\/</string>
-			<key>name</key>
-			<string>keyword.operator.assignment.beancount</string>
-		</dict>
-		<dict>
-			<key>comment</key>
-			<string>cost assignment</string>
-			<key>match</key>
-			<string>\{</string>
-			<key>name</key>
-			<string>keyword.operator.assignment.beancount</string>
-		</dict>
-		<dict>
-			<key>comment</key>
-			<string>cost assignment</string>
-			<key>match</key>
-			<string>\}</string>
-			<key>name</key>
-			<string>keyword.operator.assignment.beancount</string>
+			<key>end</key>
+			<string>(\})</string>
+			<key>endCaptures</key>
+			<dict>
+				<key>1</key>
+				<dict>
+					<key>name</key>
+					<string>keyword.operator.assignment.beancount</string>
+				</dict>
+			</dict>
+			<key>patterns</key>
+			<array>
+				<dict>
+					<key>match</key>
+					<string>\/</string>
+					<key>name</key>
+					<string>keyword.operator.assignment.beancount</string>
+				</dict>
+			</array>
 		</dict>
 		<dict>
 			<key>captures</key>
@@ -257,7 +266,7 @@
 				<key>2</key>
 				<dict>
 					<key>name</key>
-					<string>markup.underline.link.beancount</string>
+					<string>string.unquoted.link.beancount</string>
 				</dict>
 			</dict>
 			<key>comment</key>
@@ -271,18 +280,18 @@
 				<key>1</key>
 				<dict>
 					<key>name</key>
-					<string>keyword.operator</string>
+					<string>keyword.operator.modifier.beancount</string>
 				</dict>
 				<key>2</key>
 				<dict>
 					<key>name</key>
-					<string>constant.numeric</string>
+					<string>constant.numeric.currency.beancount</string>
 				</dict>
 			</dict>
 			<key>comment</key>
 			<string>numbers</string>
 			<key>match</key>
-			<string>([\-|\+]?)([\d]+\.[\d]+)</string>
+			<string>([\-|\+]?)([\d]+[\.]?[\d]*)</string>
 		</dict>
 		<dict>
 			<key>comment</key>
