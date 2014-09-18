@@ -77,7 +77,7 @@ patterns:
   match: \@
 
 
-- comment: Lot assignment
+- comment: cost assignment
   begin: (\{)
   beginCaptures:
     '1': {name: keyword.operator.assignment.beancount}
@@ -107,3 +107,20 @@ patterns:
 - comment: Illegal
   name: invalid.illegal.unrecognized.beancount
   match: '[^\s}]'
+
+repository:
+  numbers:
+    match: ([\-|\+]?)([\d]+[\.]?[\d]*)
+    captures:
+      '1': {name: keyword.operator.modifier.beancount}
+      '2': {name: constant.numeric.currency.beancount}
+  account-names:
+    match: ([A-Z][A-Za-z0-9\-]+)
+  dates:
+    match: ([0-9]{4})(\-)([0-9]{2})(\-)([0-9]{2})
+    captures:
+      '1': {name: constant.numeric.date.year.beancount}
+      '2': {name: punctuation.separator.beancount}
+      '3': {name: constant.numeric.date.month.beancount}
+      '4': {name: punctuation.separator.beancount}
+      '5': {name: constant.numeric.date.day.beancount}

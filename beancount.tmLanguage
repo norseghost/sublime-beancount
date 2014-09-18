@@ -225,7 +225,7 @@
 				</dict>
 			</dict>
 			<key>comment</key>
-			<string>Lot assignment</string>
+			<string>cost assignment</string>
 			<key>end</key>
 			<string>(\})</string>
 			<key>endCaptures</key>
@@ -302,6 +302,65 @@
 			<string>invalid.illegal.unrecognized.beancount</string>
 		</dict>
 	</array>
+	<key>repository</key>
+	<dict>
+		<key>account-names</key>
+		<dict>
+			<key>match</key>
+			<string>([A-Z][A-Za-z0-9\-]+)</string>
+		</dict>
+		<key>dates</key>
+		<dict>
+			<key>captures</key>
+			<dict>
+				<key>1</key>
+				<dict>
+					<key>name</key>
+					<string>constant.numeric.date.year.beancount</string>
+				</dict>
+				<key>2</key>
+				<dict>
+					<key>name</key>
+					<string>punctuation.separator.beancount</string>
+				</dict>
+				<key>3</key>
+				<dict>
+					<key>name</key>
+					<string>constant.numeric.date.month.beancount</string>
+				</dict>
+				<key>4</key>
+				<dict>
+					<key>name</key>
+					<string>punctuation.separator.beancount</string>
+				</dict>
+				<key>5</key>
+				<dict>
+					<key>name</key>
+					<string>constant.numeric.date.day.beancount</string>
+				</dict>
+			</dict>
+			<key>match</key>
+			<string>([0-9]{4})(\-)([0-9]{2})(\-)([0-9]{2})</string>
+		</dict>
+		<key>numbers</key>
+		<dict>
+			<key>captures</key>
+			<dict>
+				<key>1</key>
+				<dict>
+					<key>name</key>
+					<string>keyword.operator.modifier.beancount</string>
+				</dict>
+				<key>2</key>
+				<dict>
+					<key>name</key>
+					<string>constant.numeric.currency.beancount</string>
+				</dict>
+			</dict>
+			<key>match</key>
+			<string>([\-|\+]?)([\d]+[\.]?[\d]*)</string>
+		</dict>
+	</dict>
 	<key>scopeName</key>
 	<string>source.beancount</string>
 	<key>uuid</key>
