@@ -1,0 +1,5 @@
+{
+    "cmd": ["bean-check", "$file"],
+    "file_regex": "^((?:/[^/]+)*):(\\d*):(\\s*)(.+)",
+    "selector": "source.beancount"
+}
