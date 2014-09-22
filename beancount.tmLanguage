@@ -74,10 +74,36 @@
 			<string>string.quoted.double.beancount</string>
 		</dict>
 		<dict>
+			<key>captures</key>
+			<dict>
+				<key>1</key>
+				<dict>
+					<key>name</key>
+					<string>support.function.directive.option.beancount</string>
+				</dict>
+				<key>2</key>
+				<dict>
+					<key>name</key>
+					<string>support.variable.language.option.beancount</string>
+				</dict>
+				<key>3</key>
+				<dict>
+					<key>name</key>
+					<string>support.class.option.beancount</string>
+				</dict>
+			</dict>
+			<key>comment</key>
+			<string>Option directives</string>
+			<key>match</key>
+			<string>^(option)\s*(\".*\")\s*(\".*\")\s*</string>
+			<key>name</key>
+			<string>meta.directive.option.beancount</string>
+		</dict>
+		<dict>
 			<key>comment</key>
 			<string>Directives (no date)</string>
 			<key>match</key>
-			<string>^(option|poptag|pushtag)\s</string>
+			<string>^(poptag|pushtag)\s</string>
 			<key>name</key>
 			<string>keyword.operator.directive.beancount</string>
 		</dict>
@@ -110,7 +136,7 @@
 				<key>4</key>
 				<dict>
 					<key>name</key>
-					<string>support.function.builtin.directive.beancount</string>
+					<string>support.function.directive.beancount</string>
 				</dict>
 			</dict>
 			<key>comment</key>
@@ -141,7 +167,7 @@
 				<key>4</key>
 				<dict>
 					<key>name</key>
-					<string>support.function.builtin.directive.beancount</string>
+					<string>support.function.directive.beancount</string>
 				</dict>
 			</dict>
 			<key>comment</key>

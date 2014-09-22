@@ -28,9 +28,17 @@ patterns:
   name: string.quoted.double.beancount
   match: \".*\"
 
+- comment: Option directives
+  name: meta.directive.option.beancount
+  match: ^(option)\s*(\".*\")\s*(\".*\")\s*
+  captures:
+    '1': {name: support.function.directive.option.beancount}
+    '2': {name: support.variable.language.option.beancount}
+    '3': {name: support.class.option.beancount}
+
 - comment: Directives (no date)
   name: keyword.operator.directive.beancount
-  match: ^(option|poptag|pushtag)\s
+  match: ^(poptag|pushtag)\s
 
 - comment: Currencies
   name: variable.other.currency.beancount
@@ -42,7 +50,7 @@ patterns:
     '1': {name: constant.numeric.date.year.beancount}
     '2': {name: constant.numeric.date.month.beancount}
     '3': {name: constant.numeric.date.day.beancount}
-    '4': {name: support.function.builtin.directive.beancount}
+    '4': {name: support.function.directive.beancount}
 # FIXME: this violates DRY
 
 - comment: Transactions
@@ -51,7 +59,7 @@ patterns:
     '1': {name: constant.numeric.date.year.beancount}
     '2': {name: constant.numeric.date.month.beancount}
     '3': {name: constant.numeric.date.day.beancount}
-    '4': {name: support.function.builtin.directive.beancount}
+    '4': {name: support.function.directive.beancount}
   patterns:
   - name: keyword.operator.flag.beancount
     match: \!
