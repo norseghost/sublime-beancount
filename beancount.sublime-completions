@@ -1,0 +1,22 @@
+{
+        "scope": "source.beancount meta.directive.option.beancount support.variable.language.option.beancount",
+
+        "completions":
+        [
+                { "trigger": "d", "contents": "documents" },
+                { "trigger": "t", "contents": "title" },
+                { "trigger": "cc", "contents": "conversion_currency" },
+                { "trigger": "oc", "contents": "operating_currency" },
+                { "trigger": "na", "contents": "name_assets" },
+                { "trigger": "nl", "contents": "name_liabilities" },
+                { "trigger": "neq", "contents": "name_equity" },
+                { "trigger": "ni", "contents": "name_income" },
+                { "trigger": "nex", "contents": "name_expenses" },
+                { "trigger": "apb", "contents": "account_previous_balances" },
+                { "trigger": "ape", "contents": "account_previous_earnings" },
+                { "trigger": "apc", "contents": "account_previous_conversions" },
+                { "trigger": "ace", "contents": "account_current_earnings" },
+                { "trigger": "acc", "contents": "account_current_conversions" },
+                { "trigger": "p", "contents": "plugin" },
+        ]
+}
