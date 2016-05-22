@@ -1,5 +1,6 @@
 {
     "cmd": ["bean-check", "$file"],
     "file_regex": "^((?:/[^/]+)*):(\\d*):(\\s*)(.+)",
-    "selector": "source.beancount"
+    "selector": "source.beancount",
+    "path": "$PATH:$HOME/bin:$HOME/.local/bin"
 }
