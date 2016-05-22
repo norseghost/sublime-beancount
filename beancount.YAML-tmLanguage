@@ -49,13 +49,13 @@ patterns:
     match: \\.
   end: \"
 
-- comment: Option directives, no date, no meta
+- comment: Option directive (no date, string x2, no tag, no meta, no ops)
   name: meta.directive.option.beancount
-  match: ^(option)\s*(\".*\")\s*(\".*\")\s*
+  match: ^(option)\s+(\".*\")\s+(\".*\")\s*\n
   captures:
     '1': {name: support.function.directive.option.beancount}
     '2': {name: support.variable.language.option.beancount}
-    '3': {name: support.class.option.beancount}
+    '3': {name: string.quoted.double.beancount}
 
 - comment: Directives (no date)
   name: keyword.operator.directive.beancount
