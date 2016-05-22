@@ -20,7 +20,7 @@ patterns:
   begin: ([:]?)([A-Z][A-Za-z0-9\-]+)
   beginCaptures:
     '1': {name: punctuation.separator.beancount}
-    '2': {name: constant.language.beancount}
+    '2': {name: variable.account.beancount}
   patterns:
   - {include: '$self'}
   end: ([:]?)|(\s)
