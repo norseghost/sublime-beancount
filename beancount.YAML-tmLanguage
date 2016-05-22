@@ -8,7 +8,7 @@ uuid: dbf28879-ee4d-497e-a678-a5c5a5e8d74f
 patterns:
 - comment: Commented text
   name: comment.line.beancount
-  match:  \s;\s+.*
+  match:  ;.*
 
 - comment: Root Accounts
   match: \s([A-Z][A-Za-z0-9\-]+)(:)
