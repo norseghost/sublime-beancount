@@ -94,6 +94,20 @@ patterns:
   - include: '#meta'
   end: ^(?!\s)
 
+# FIXME: Restrict use of commodity too many times
+- comment: Commodity directive (date, account, string, no tag, meta?)
+  name: meta.directive.dated.beancount
+  begin: ([0-9]{4})[\-|/]([0-9]{2})[\-|/]([0-9]{2})\s(commodity)
+  beginCaptures:
+    '1': {name: constant.numeric.date.year.beancount}
+    '2': {name: constant.numeric.date.month.beancount}
+    '3': {name: constant.numeric.date.day.beancount}
+    '4': {name: support.function.directive.beancount}
+  patterns:
+  - include: '#commodity'
+  - include: '#meta'
+  end: ^(?!\s)
+
 # FIXME: Restrict use of account and string too many times
 - comment: Note/Document directive (date, account, string, no tag, meta?)
   name: meta.directive.dated.beancount
@@ -111,7 +125,7 @@ patterns:
 
 - comment: Dated directives (date, string?, no tag, meta?)
   name: meta.directive.dated.beancount
-  begin: ([0-9]{4})[\-|/]([0-9]{2})[\-|/]([0-9]{2})\s(balance|price|commodity)
+  begin: ([0-9]{4})[\-|/]([0-9]{2})[\-|/]([0-9]{2})\s(balance|price)
   beginCaptures:
     '1': {name: constant.numeric.date.year.beancount}
     '2': {name: constant.numeric.date.month.beancount}
@@ -202,3 +216,6 @@ repository:
     - name: constant.character.escape.beancount
       match: \\.
     end: \"
+  commodity:
+    name: string.unquoted.commodity.beancount
+    match: ([A-Z][A-Z0-9\-_]+)\s
