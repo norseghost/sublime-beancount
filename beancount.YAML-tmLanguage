@@ -10,20 +10,21 @@ patterns:
   name: comment.line.beancount
   match:  ;.*
 
-- comment: Root Accounts
-  match: \s([A-Z][A-Za-z0-9\-]+)(:)
-  captures:
+- comment: Account
+  begin: ([A-Z][A-Za-z0-9\-]+)(:)
+  beginCaptures:
     '1': {name: constant.language.beancount}
     '2': {name: punctuation.separator.beancount}
-
-- comment: Accounts
-  begin: ([:]?)([A-Z][A-Za-z0-9\-]+)
-  beginCaptures:
-    '1': {name: punctuation.separator.beancount}
-    '2': {name: variable.account.beancount}
   patterns:
-  - {include: '$self'}
-  end: ([:]?)|(\s)
+  - comment: Sub accounts
+    begin: ([A-Z][A-Za-z0-9\-]+)([:]?)
+    beginCaptures:
+      '1': {name: variable.account.beancount}
+      '2': {name: punctuation.separator.beancount}
+    patterns:
+    - {include: '$self'}
+    end: ([:]?)|(\s)
+  end: '\s'
 
 - comment: strings
   name: string.quoted.double.beancount
