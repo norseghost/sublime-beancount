@@ -57,9 +57,14 @@ patterns:
     '2': {name: support.variable.language.option.beancount}
     '3': {name: string.quoted.double.beancount}
 
-- comment: Directives (no date)
+- comment: Plugin directive (no date, string x2, no tag, no meta, no ops)
   name: keyword.operator.directive.beancount
-  match: ^(plugin)\s
+  match: ^(plugin)\s+(\"(.*)\")\s+(\".*\")\s*\n
+  captures:
+    '1': {name: keyword.operator.directive.beancount}
+    '2': {name: string.quoted.double.beancount}
+    '3': {name: entity.name.function.beancount}
+    '4': {name: string.quoted.double.beancount}
 
 - comment: Dated directives
   match: ([0-9]{4})[\-|/]([0-9]{2})[\-|/]([0-9]{2})\s(open|close|pad|balance|note|price|event|document|commodity)
