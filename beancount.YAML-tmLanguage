@@ -49,8 +49,8 @@ patterns:
     '3': {name: constant.numeric.date.day.beancount}
     '4': {name: support.function.directive.beancount}
 # FIXME: this violates DRY
-- comment: second line
-  match: \s\s(name|isin|old-name|asset-class)[:]
+- comment: metadata
+  match: \s\s([a-z][A-Za-z0-9\-]+)[:]\s
   name: keyword.operator.directive.beancount
 
 - comment: Transactions
