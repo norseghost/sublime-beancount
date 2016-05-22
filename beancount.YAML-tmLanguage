@@ -24,11 +24,19 @@ patterns:
     patterns:
     - {include: '$self'}
     end: ([:]?)|(\s)
-  end: '\s'
+  end: \s
 
 - comment: strings
   name: string.quoted.double.beancount
-  match: \".*\"
+  begin: \"
+  patterns:
+  - name: constant.character.escape.beancount
+    match: \\.
+  end: \"
+
+# - comment: strings
+#   name: string.quoted.double.beancount
+#   match: \".*\"
 
 - comment: Option directives
   name: meta.directive.option.beancount
