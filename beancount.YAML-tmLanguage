@@ -6,9 +6,17 @@ uuid: dbf28879-ee4d-497e-a678-a5c5a5e8d74f
 
 
 patterns:
-- comment: Commented text
+- comment: Comments
   name: comment.line.beancount
   match:  ;.*
+
+- comment: Tag directive (no date, no string, tag, no meta, no ops)
+  name: meta.directive.tag.beancount
+  match: ^(poptag|pushtag)\s+(#)([A-Za-z0-9\-_/.]+)\s*\n
+  captures:
+    '1': {name: keyword.operator.directive.beancount}
+    '2': {name: keyword.operator.tag.beancount}
+    '3': {name: string.unquoted.tag.beancount}
 
 - comment: Account
   begin: ([A-Z][A-Za-z0-9\-]+)(:)
@@ -34,11 +42,7 @@ patterns:
     match: \\.
   end: \"
 
-# - comment: strings
-#   name: string.quoted.double.beancount
-#   match: \".*\"
-
-- comment: Option directives
+- comment: Option directives, no date, no meta
   name: meta.directive.option.beancount
   match: ^(option)\s*(\".*\")\s*(\".*\")\s*
   captures:
@@ -48,7 +52,7 @@ patterns:
 
 - comment: Directives (no date)
   name: keyword.operator.directive.beancount
-  match: ^(poptag|pushtag|include|plugin)\s
+  match: ^(include|plugin)\s
 
 - comment: Dated directives
   match: ([0-9]{4})[\-|/]([0-9]{2})[\-|/]([0-9]{2})\s(open|close|pad|balance|note|price|event|document|commodity)
