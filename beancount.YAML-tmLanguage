@@ -39,7 +39,7 @@ patterns:
 
 - comment: Directives (no date)
   name: keyword.operator.directive.beancount
-  match: ^(poptag|pushtag|include)\s
+  match: ^(poptag|pushtag|include|plugin)\s
 
 - comment: Dated directives
   match: ([0-9]{4})[\-|/]([0-9]{2})[\-|/]([0-9]{2})\s(open|close|pad|balance|note|price|event|document|commodity)
