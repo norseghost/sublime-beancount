@@ -18,6 +18,13 @@ patterns:
     '2': {name: keyword.operator.tag.beancount}
     '3': {name: string.unquoted.tag.beancount}
 
+- comment: Include directive (no date, string x1, no tag, no meta, no ops)
+  name: meta.directive.include.beancount
+  match: ^(include)\s+(\".*\")\s*\n
+  captures:
+    '1': {name: keyword.operator.directive.beancount}
+    '2': {name: string.quoted.double.beancount}
+
 - comment: Account
   begin: ([A-Z][A-Za-z0-9\-]+)(:)
   beginCaptures:
@@ -52,7 +59,7 @@ patterns:
 
 - comment: Directives (no date)
   name: keyword.operator.directive.beancount
-  match: ^(include|plugin)\s
+  match: ^(plugin)\s
 
 - comment: Dated directives
   match: ([0-9]{4})[\-|/]([0-9]{2})[\-|/]([0-9]{2})\s(open|close|pad|balance|note|price|event|document|commodity)
