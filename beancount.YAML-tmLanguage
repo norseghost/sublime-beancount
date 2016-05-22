@@ -66,17 +66,19 @@ patterns:
     '3': {name: entity.name.function.beancount}
     '4': {name: string.quoted.double.beancount}
 
-- comment: Dated directives
-  match: ([0-9]{4})[\-|/]([0-9]{2})[\-|/]([0-9]{2})\s(open|close|pad|balance|note|price|event|document|commodity)
-  captures:
+- comment: Dated directives (date, string?, no tag, meta?)
+  name: meta.directive.dated.beancount
+  begin: ([0-9]{4})[\-|/]([0-9]{2})[\-|/]([0-9]{2})\s(open|close|pad|balance|note|price|event|document|commodity)
+  beginCaptures:
     '1': {name: constant.numeric.date.year.beancount}
     '2': {name: constant.numeric.date.month.beancount}
     '3': {name: constant.numeric.date.day.beancount}
     '4': {name: support.function.directive.beancount}
+  patterns:
+  - include: '#meta'
+  end: ^(?!\s)
+
 # FIXME: this violates DRY
-- comment: metadata
-  match: \s\s([a-z][A-Za-z0-9\-]+)[:]\s
-  name: keyword.operator.directive.beancount
 
 - comment: Transactions
   match: ([0-9]{4}[\-|/][0-9]{2}[\-|/][0-9]{2})\s((txn)|\*|\!)\s(".*?")(\s+".*?")?((\s*#[a-zA-z\-]+)*)(\s*;.*)?
@@ -130,3 +132,8 @@ patterns:
 - comment: Illegal
   name: invalid.illegal.unrecognized.beancount
   match: '[^\s}]'
+
+repository:
+  meta:
+    match: ^\s*([a-z][A-Za-z0-9\-]+)[:]\s
+    name: keyword.operator.directive.beancount
