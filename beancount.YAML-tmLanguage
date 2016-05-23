@@ -15,7 +15,7 @@ patterns:
   captures:
     '1': {name: keyword.operator.directive.beancount}
     '2': {name: keyword.operator.tag.beancount}
-    '3': {name: string.unquoted.tag.beancount}
+    '3': {name: entity.name.tag.beancount}
 
 - comment: Include directive
   name: meta.directive.include.beancount
