@@ -4,13 +4,12 @@ scopeName: source.beancount
 fileTypes: [beancount]
 uuid: dbf28879-ee4d-497e-a678-a5c5a5e8d74f
 
-
 patterns:
 - comment: Comments
   name: comment.line.beancount
   match:  ;.*
 
-- comment: Tag directive (no date, no string, tag, no meta, no ops)
+- comment: Tag directive
   name: meta.directive.tag.beancount
   match: ^(poptag|pushtag)\s+(#)([A-Za-z0-9\-_/.]+)\s*\n
   captures:
@@ -18,14 +17,14 @@ patterns:
     '2': {name: keyword.operator.tag.beancount}
     '3': {name: string.unquoted.tag.beancount}
 
-- comment: Include directive (no date, string x1, no tag, no meta, no ops)
+- comment: Include directive
   name: meta.directive.include.beancount
   match: ^(include)\s+(\".*\")\s*\n
   captures:
     '1': {name: keyword.operator.directive.beancount}
     '2': {name: string.quoted.double.beancount}
 
-- comment: Option directive (no date, string x2, no tag, no meta, no ops)
+- comment: Option directive
   name: meta.directive.option.beancount
   match: ^(option)\s+(\".*\")\s+(\".*\")\s*\n
   captures:
@@ -33,7 +32,7 @@ patterns:
     '2': {name: support.variable.language.option.beancount}
     '3': {name: string.quoted.double.beancount}
 
-- comment: Plugin directive (no date, string x2, no tag, no meta, no ops)
+- comment: Plugin directive
   name: keyword.operator.directive.beancount
   match: ^(plugin)\s+(\"(.*)\")\s+(\".*\")\s*\n
   captures:
@@ -43,7 +42,7 @@ patterns:
     '4': {name: string.quoted.double.beancount}
 
 # FIXME: Restrict use of account too many times
-- comment: Open/Close/Pad directive (date, account, no tag, meta?)
+- comment: Open/Close/Pad directive
   name: meta.directive.dated.beancount
   begin: ([0-9]{4})[\-|/]([0-9]{2})[\-|/]([0-9]{2})\s(open|close|pad)
   beginCaptures:
@@ -57,7 +56,7 @@ patterns:
   end: (?=(^\s*$|^\S))
 
 # FIXME: Restrict use of string too many times
-- comment: Event directive (date, string, no tag, meta?)
+- comment: Event directive
   name: meta.directive.dated.beancount
   begin: ([0-9]{4})[\-|/]([0-9]{2})[\-|/]([0-9]{2})\s(event)
   beginCaptures:
@@ -71,7 +70,7 @@ patterns:
   end: (?=(^\s*$|^\S))
 
 # FIXME: Restrict use of commodity too many times
-- comment: Commodity directive (date, account, string, no tag, meta?)
+- comment: Commodity directive
   name: meta.directive.dated.beancount
   begin: ([0-9]{4})[\-|/]([0-9]{2})[\-|/]([0-9]{2})\s(commodity)
   beginCaptures:
@@ -85,7 +84,7 @@ patterns:
   end: (?=(^\s*$|^\S))
 
 # FIXME: Restrict use of account and string too many times
-- comment: Note/Document directive (date, account, string, no tag, meta?)
+- comment: Note/Document directive
   name: meta.directive.dated.beancount
   begin: ([0-9]{4})[\-|/]([0-9]{2})[\-|/]([0-9]{2})\s(note|document)
   beginCaptures:
@@ -100,7 +99,7 @@ patterns:
   end: (?=(^\s*$|^\S))
 
 # FIXME: Restrict use of commodity and amount too many times
-- comment: Price directives (date, string?, no tag, meta?)
+- comment: Price directives
   name: meta.directive.dated.beancount
   begin: ([0-9]{4})[\-|/]([0-9]{2})[\-|/]([0-9]{2})\s(price)
   beginCaptures:
@@ -115,7 +114,7 @@ patterns:
   end: (?=(^\s*$|^\S))
 
 # FIXME: Restrict use of account and amount too many times
-- comment: Balance directives (date, string?, no tag, meta?)
+- comment: Balance directives
   name: meta.directive.dated.beancount
   begin: ([0-9]{4})[\-|/]([0-9]{2})[\-|/]([0-9]{2})\s(balance)
   beginCaptures:
