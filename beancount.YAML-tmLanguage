@@ -155,7 +155,7 @@ patterns:
 
 - comment: Transaction directive
   name: meta.directive.transaction.beancount
-  begin: ([0-9]{4})([\-|/])([0-9]{2})([\-|/])([0-9]{2})\s+(txn|\*|\!)(?:\s+(".*")(?=\s"))?\s+(".*?")(?=((?:\s+#[a-zA-z\-]+(?=\s))*(?:\s+\^[a-zA-z\-\.]+(?=\s))*(?:\s+;\s*.*)?)\n)
+  begin: ([0-9]{4})([\-|/])([0-9]{2})([\-|/])([0-9]{2})\s+(txn|\*|\!)(?:\s+(".*")(?=\s+"))?\s+(".*?")(?=((?:\s+#[a-zA-z\-]+(?=\s))*(?:\s+\^[a-zA-z\-\.]+(?=\s))*(?:\s+;\s*.*)?)\s)
   beginCaptures:
     '1': {name: constant.numeric.date.year.beancount}
     '2': {name: punctuation.separator.beancount}
