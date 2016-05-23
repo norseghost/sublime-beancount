@@ -78,7 +78,7 @@ patterns:
   patterns:
   - include: '#account'
   - include: '#meta'
-  end: ^(?!\s)
+  end: (?=(^\s*$|^\S))
 
 # FIXME: Restrict use of string too many times
 - comment: Event directive (date, string, no tag, meta?)
@@ -92,7 +92,7 @@ patterns:
   patterns:
   - include: '#string'
   - include: '#meta'
-  end: ^(?!\s)
+  end: (?=(^\s*$|^\S))
 
 # FIXME: Restrict use of commodity too many times
 - comment: Commodity directive (date, account, string, no tag, meta?)
@@ -106,7 +106,7 @@ patterns:
   patterns:
   - include: '#commodity'
   - include: '#meta'
-  end: ^(?!\s)
+  end: (?=(^\s*$|^\S))
 
 # FIXME: Restrict use of account and string too many times
 - comment: Note/Document directive (date, account, string, no tag, meta?)
@@ -121,7 +121,7 @@ patterns:
   - include: '#account'
   - include: '#string'
   - include: '#meta'
-  end: ^(?!\s)
+  end: (?=(^\s*$|^\S))
 
 # FIXME: Restrict use of commodity and amount too many times
 - comment: Price directives (date, string?, no tag, meta?)
@@ -136,7 +136,7 @@ patterns:
   - include: '#commodity'
   - include: '#amount'
   - include: '#meta'
-  end: ^(?!\s)
+  end: (?=(^\s*$|^\S))
 
 # FIXME: Restrict use of account and amount too many times
 - comment: Balance directives (date, string?, no tag, meta?)
@@ -151,7 +151,7 @@ patterns:
   - include: '#account'
   - include: '#amount'
   - include: '#meta'
-  end: ^(?!\s)
+  end: (?=(^\s*$|^\S))
 
 - comment: Transaction directive
   name: meta.directive.transaction.beancount
@@ -172,7 +172,7 @@ patterns:
   - include: '#account'
   - include: '#amount'
   - include: '#meta'
-  end: ^(?!\s)
+  end: (?=(^\s*$|^\S))
 
 - comment: flag
   name: keyword.other.beancount
