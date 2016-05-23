@@ -44,12 +44,14 @@ patterns:
 # FIXME: Restrict use of account too many times
 - comment: Open/Close/Pad directive
   name: meta.directive.dated.beancount
-  begin: ([0-9]{4})[\-|/]([0-9]{2})[\-|/]([0-9]{2})\s(open|close|pad)
+  begin: ([0-9]{4})([\-|/])([0-9]{2})([\-|/])([0-9]{2})\s(open|close|pad)
   beginCaptures:
     '1': {name: constant.numeric.date.year.beancount}
-    '2': {name: constant.numeric.date.month.beancount}
-    '3': {name: constant.numeric.date.day.beancount}
-    '4': {name: support.function.beancount}
+    '2': {name: punctuation.separator.beancount}
+    '3': {name: constant.numeric.date.month.beancount}
+    '4': {name: punctuation.separator.beancount}
+    '5': {name: constant.numeric.date.day.beancount}
+    '6': {name: support.function.beancount}
   patterns:
   - include: '#account'
   - include: '#meta'
@@ -58,12 +60,14 @@ patterns:
 # FIXME: Restrict use of string too many times
 - comment: Event directive
   name: meta.directive.dated.beancount
-  begin: ([0-9]{4})[\-|/]([0-9]{2})[\-|/]([0-9]{2})\s(event)
+  begin: ([0-9]{4})([\-|/])([0-9]{2})([\-|/])([0-9]{2})\s(event)
   beginCaptures:
     '1': {name: constant.numeric.date.year.beancount}
-    '2': {name: constant.numeric.date.month.beancount}
-    '3': {name: constant.numeric.date.day.beancount}
-    '4': {name: support.function.directive.beancount}
+    '2': {name: punctuation.separator.beancount}
+    '3': {name: constant.numeric.date.month.beancount}
+    '4': {name: punctuation.separator.beancount}
+    '5': {name: constant.numeric.date.day.beancount}
+    '6': {name: support.function.directive.beancount}
   patterns:
   - include: '#string'
   - include: '#meta'
@@ -72,12 +76,14 @@ patterns:
 # FIXME: Restrict use of commodity too many times
 - comment: Commodity directive
   name: meta.directive.dated.beancount
-  begin: ([0-9]{4})[\-|/]([0-9]{2})[\-|/]([0-9]{2})\s(commodity)
+  begin: ([0-9]{4})([\-|/])([0-9]{2})([\-|/])([0-9]{2})\s(commodity)
   beginCaptures:
     '1': {name: constant.numeric.date.year.beancount}
-    '2': {name: constant.numeric.date.month.beancount}
-    '3': {name: constant.numeric.date.day.beancount}
-    '4': {name: support.function.directive.beancount}
+    '2': {name: punctuation.separator.beancount}
+    '3': {name: constant.numeric.date.month.beancount}
+    '4': {name: punctuation.separator.beancount}
+    '5': {name: constant.numeric.date.day.beancount}
+    '6': {name: support.function.directive.beancount}
   patterns:
   - include: '#commodity'
   - include: '#meta'
@@ -86,12 +92,14 @@ patterns:
 # FIXME: Restrict use of account and string too many times
 - comment: Note/Document directive
   name: meta.directive.dated.beancount
-  begin: ([0-9]{4})[\-|/]([0-9]{2})[\-|/]([0-9]{2})\s(note|document)
+  begin: ([0-9]{4})([\-|/])([0-9]{2})([\-|/])([0-9]{2})\s(note|document)
   beginCaptures:
     '1': {name: constant.numeric.date.year.beancount}
-    '2': {name: constant.numeric.date.month.beancount}
-    '3': {name: constant.numeric.date.day.beancount}
-    '4': {name: support.function.directive.beancount}
+    '2': {name: punctuation.separator.beancount}
+    '3': {name: constant.numeric.date.month.beancount}
+    '4': {name: punctuation.separator.beancount}
+    '5': {name: constant.numeric.date.day.beancount}
+    '6': {name: support.function.directive.beancount}
   patterns:
   - include: '#account'
   - include: '#string'
@@ -101,12 +109,14 @@ patterns:
 # FIXME: Restrict use of commodity and amount too many times
 - comment: Price directives
   name: meta.directive.dated.beancount
-  begin: ([0-9]{4})[\-|/]([0-9]{2})[\-|/]([0-9]{2})\s(price)
+  begin: ([0-9]{4})([\-|/])([0-9]{2})([\-|/])([0-9]{2})\s(price)
   beginCaptures:
     '1': {name: constant.numeric.date.year.beancount}
-    '2': {name: constant.numeric.date.month.beancount}
-    '3': {name: constant.numeric.date.day.beancount}
-    '4': {name: support.function.directive.beancount}
+    '2': {name: punctuation.separator.beancount}
+    '3': {name: constant.numeric.date.month.beancount}
+    '4': {name: punctuation.separator.beancount}
+    '5': {name: constant.numeric.date.day.beancount}
+    '6': {name: support.function.directive.beancount}
   patterns:
   - include: '#commodity'
   - include: '#amount'
@@ -116,12 +126,14 @@ patterns:
 # FIXME: Restrict use of account and amount too many times
 - comment: Balance directives
   name: meta.directive.dated.beancount
-  begin: ([0-9]{4})[\-|/]([0-9]{2})[\-|/]([0-9]{2})\s(balance)
+  begin: ([0-9]{4})([\-|/])([0-9]{2})([\-|/])([0-9]{2})\s(balance)
   beginCaptures:
     '1': {name: constant.numeric.date.year.beancount}
-    '2': {name: constant.numeric.date.month.beancount}
-    '3': {name: constant.numeric.date.day.beancount}
-    '4': {name: support.function.directive.beancount}
+    '2': {name: punctuation.separator.beancount}
+    '3': {name: constant.numeric.date.month.beancount}
+    '4': {name: punctuation.separator.beancount}
+    '5': {name: constant.numeric.date.day.beancount}
+    '6': {name: support.function.directive.beancount}
   patterns:
   - include: '#account'
   - include: '#amount'
