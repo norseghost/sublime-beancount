@@ -25,30 +25,6 @@ patterns:
     '1': {name: keyword.operator.directive.beancount}
     '2': {name: string.quoted.double.beancount}
 
-- comment: Account
-  begin: ([A-Z][A-Za-z0-9\-]+)(:)
-  beginCaptures:
-    '1': {name: constant.language.beancount}
-    '2': {name: punctuation.separator.beancount}
-  patterns:
-  - comment: Sub accounts
-    begin: ([A-Z][A-Za-z0-9\-]+)([:]?)
-    beginCaptures:
-      '1': {name: variable.account.beancount}
-      '2': {name: punctuation.separator.beancount}
-    patterns:
-    - {include: '$self'}
-    end: ([:]?)|(\s)
-  end: \s
-
-- comment: strings
-  name: string.quoted.double.beancount
-  begin: \"
-  patterns:
-  - name: constant.character.escape.beancount
-    match: \\.
-  end: \"
-
 - comment: Option directive (no date, string x2, no tag, no meta, no ops)
   name: meta.directive.option.beancount
   match: ^(option)\s+(\".*\")\s+(\".*\")\s*\n
@@ -210,7 +186,7 @@ repository:
     end: \s
   amount:
     name: meta.amount.beancount
-    match: ([\-|\+]?)([\d]+[\.]?[\d]*)\s*([A-Z][A-Z0-9\-]{0,10})
+    match: ([\-|\+]?)([\d]+[\.]?[\d]*)\s*([A-Z][A-Z0-9\'\.\_\-]{0,22}[A-Z0-9])
     captures:
       '1': {name: keyword.operator.modifier.beancount}
       '2': {name: constant.numeric.currency.beancount}
@@ -262,7 +238,7 @@ repository:
     end: \"
   commodity:
     name: string.unquoted.commodity.beancount
-    match: ([A-Z][A-Z0-9\-_]+)\s
+    match: ([A-Z][A-Z0-9\'\.\_\-]{0,22}[A-Z0-9])
   tag:
     match: (?<=\s)(#)([A-Za-z0-9\-_/.]+)(?=\s)
     captures:
