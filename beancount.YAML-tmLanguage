@@ -169,43 +169,31 @@ patterns:
   - include: '#tag'
   - include: '#link'
   - include: '#comment'
-  - include: '#account'
-  - include: '#amount'
   - include: '#meta'
+  - include: '#posting'
   end: (?=(^\s*$|^\S))
 
-- comment: flag
-  name: keyword.other.beancount
-  match: \s\!
-
-- comment: Price assignment
-  name: keyword.operator.assignment.beancount
-  match: \@
-
-- comment: cost assignment
-  begin: (\{)
-  beginCaptures:
-    '1': {name: keyword.operator.assignment.beancount}
-  patterns:
-  - name: keyword.operator.assignment.beancount
-    match:  \/
-  end: (\})
-  endCaptures:
-    '1': {name: keyword.operator.assignment.beancount}
-
-- comment: numbers
-  match: ([\-|\+]?)([\d]+[\.]?[\d]*)\s?([A-Z][A-Z0-9\-]{0,10})
-  captures:
-    '1': {name: keyword.operator.modifier.beancount}
-    '2': {name: constant.numeric.currency.beancount}
-    '3': {name: variable.other.currency.beancount}
-
-- comment: Illegal
-  name: invalid.illegal.unrecognized.beancount
-  match: '[^\s}]'
+# - include: '#illegal'
 
 repository:
+  posting:
+    name: meta.posting.beancount
+    begin: ^\s+(?=([A-Z\!]))
+    patterns:
+    - include: '#flag'
+    - include: '#account'
+    - include: '#amount'
+    - include: '#cost'
+    - include: '#date'
+    - include: '#price'
+    - include: '#comment'
+    - include: '#illegal'
+    end: (?=\n)
+  flag:
+    name: keyword.other.beancount
+    match: (?<=\s)(\!)
   account:
+    name: meta.account.beancount
     begin: ([A-Z][A-Za-z0-9\-]+)(:)
     beginCaptures:
       '1': {name: constant.language.beancount}
@@ -220,6 +208,41 @@ repository:
       - {include: '$self'}
       end: ([:]?)|(\s)
     end: \s
+  amount:
+    name: meta.amount.beancount
+    match: ([\-|\+]?)([\d]+[\.]?[\d]*)\s*([A-Z][A-Z0-9\-]{0,10})
+    captures:
+      '1': {name: keyword.operator.modifier.beancount}
+      '2': {name: constant.numeric.currency.beancount}
+      '3': {name: variable.other.currency.beancount}
+  cost:
+    name: meta.cost.beancount
+    begin: \{
+    beginCaptures:
+      '0': {name: keyword.operator.assignment.beancount}
+    patterns:
+    - include: '#date'
+    - include: '#amount'
+    end: \}
+    endCaptures:
+      '0': {name: keyword.operator.assignment.beancount}
+  price:
+    name: meta.price.beancount
+    begin: \@
+    beginCaptures:
+      '0': {name: keyword.operator.assignment.beancount}
+    patterns:
+    - include: '#amount'
+    end: (?=(;|\n))
+  date:
+    name: meta.date.beancount
+    match: ([0-9]{4})([\-|/])([0-9]{2})([\-|/])([0-9]{2})
+    captures:
+      '1': {name: constant.numeric.date.year.beancount}
+      '2': {name: punctuation.separator.beancount}
+      '3': {name: constant.numeric.date.month.beancount}
+      '4': {name: punctuation.separator.beancount}
+      '5': {name: constant.numeric.date.day.beancount}
   meta:
     name: meta.meta.beancount
     begin: ^\s*([a-z][A-Za-z0-9\-]+)([:])\s
@@ -240,12 +263,6 @@ repository:
   commodity:
     name: string.unquoted.commodity.beancount
     match: ([A-Z][A-Z0-9\-_]+)\s
-  amount:
-    match: ([\-|\+]?)([\d]+[\.]?[\d]*)\s?([A-Z][A-Z0-9\-]{0,10})
-    captures:
-      '1': {name: keyword.operator.modifier.beancount}
-      '2': {name: constant.numeric.currency.beancount}
-      '3': {name: variable.other.currency.beancount}
   tag:
     match: (?<=\s)(#)([A-Za-z0-9\-_/.]+)(?=\s)
     captures:
@@ -260,3 +277,6 @@ repository:
     match: (?<=\s)(;.*)(?=\n)
     captures:
       '1': {name: comment.line.beancount}
+  illegal:
+    name: invalid.illegal.unrecognized.beancount
+    match: '[^\s]'
