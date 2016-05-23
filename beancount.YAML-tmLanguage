@@ -172,13 +172,13 @@ repository:
     captures:
       '1': {name: keyword.operator.modifier.beancount}
       '2': {name: constant.numeric.currency.beancount}
-      '3': {name: variable.other.currency.beancount}
+      '3': {name: entity.type.commodity.beancount}
   comments:
     match: (?<=\s)(;.*)(?=\n)
     captures:
       '1': {name: comment.line.beancount}
   commodity:
-    name: string.unquoted.commodity.beancount
+    name: entity.type.commodity.beancount
     match: ([A-Z][A-Z0-9\'\.\_\-]{0,22}[A-Z0-9])
   cost:
     name: meta.cost.beancount
