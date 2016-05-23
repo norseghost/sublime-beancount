@@ -154,7 +154,6 @@ patterns:
   end: ^(?!\s)
 
 # FIXME: this violates DRY
-
 - comment: Transactions
   match: ([0-9]{4}[\-|/][0-9]{2}[\-|/][0-9]{2})\s((txn)|\*|\!)\s(".*?")(\s+".*?")?((\s*#[a-zA-z\-]+)*)(\s*;.*)?
   captures:
@@ -225,8 +224,14 @@ repository:
       end: ([:]?)|(\s)
     end: \s
   meta:
-    match: ^\s*([a-z][A-Za-z0-9\-]+)[:]\s
-    name: keyword.operator.directive.beancount
+    name: meta.meta.beancount
+    begin: ^\s*([a-z][A-Za-z0-9\-]+)([:])\s
+    beginCaptures:
+      '1': {name: keyword.operator.directive.beancount}
+      '2': {name: punctuation.separator.beancount}
+    patterns:
+    - include: '#string'
+    end: \n
   string:
     name: string.quoted.double.beancount
     begin: \"
