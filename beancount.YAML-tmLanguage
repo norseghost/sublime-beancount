@@ -53,8 +53,9 @@ patterns:
     '5': {name: constant.numeric.date.day.beancount}
     '6': {name: support.function.beancount}
   patterns:
-  - include: '#account'
   - include: '#meta'
+  - include: '#account'
+  - include: '#illegal'
   end: (?=(^\s*$|^\S))
 
 # FIXME: Restrict use of string too many times
@@ -69,8 +70,9 @@ patterns:
     '5': {name: constant.numeric.date.day.beancount}
     '6': {name: support.function.directive.beancount}
   patterns:
-  - include: '#string'
   - include: '#meta'
+  - include: '#string'
+  - include: '#illegal'
   end: (?=(^\s*$|^\S))
 
 # FIXME: Restrict use of commodity too many times
@@ -85,8 +87,9 @@ patterns:
     '5': {name: constant.numeric.date.day.beancount}
     '6': {name: support.function.directive.beancount}
   patterns:
-  - include: '#commodity'
   - include: '#meta'
+  - include: '#commodity'
+  - include: '#illegal'
   end: (?=(^\s*$|^\S))
 
 # FIXME: Restrict use of account and string too many times
@@ -101,9 +104,10 @@ patterns:
     '5': {name: constant.numeric.date.day.beancount}
     '6': {name: support.function.directive.beancount}
   patterns:
+  - include: '#meta'
   - include: '#account'
   - include: '#string'
-  - include: '#meta'
+  - include: '#illegal'
   end: (?=(^\s*$|^\S))
 
 # FIXME: Restrict use of commodity and amount too many times
@@ -118,9 +122,10 @@ patterns:
     '5': {name: constant.numeric.date.day.beancount}
     '6': {name: support.function.directive.beancount}
   patterns:
+  - include: '#meta'
   - include: '#commodity'
   - include: '#amount'
-  - include: '#meta'
+  - include: '#illegal'
   end: (?=(^\s*$|^\S))
 
 # FIXME: Restrict use of account and amount too many times
@@ -135,9 +140,10 @@ patterns:
     '5': {name: constant.numeric.date.day.beancount}
     '6': {name: support.function.directive.beancount}
   patterns:
+  - include: '#meta'
   - include: '#account'
   - include: '#amount'
-  - include: '#meta'
+  - include: '#illegal'
   end: (?=(^\s*$|^\S))
 
 - comment: Transaction directive
@@ -153,11 +159,12 @@ patterns:
     '7': {name: string.quoted.tiers.beancount}
     '8': {name: string.quoted.narration.beancount}
   patterns:
+  - include: '#meta'
   - include: '#tag'
   - include: '#link'
   - include: '#comment'
-  - include: '#meta'
   - include: '#posting'
+  - include: '#illegal'
   end: (?=(^\s*$|^\S))
 
 # - include: '#illegal'
@@ -192,7 +199,8 @@ repository:
         '1': {name: variable.account.beancount}
         '2': {name: punctuation.separator.beancount}
       patterns:
-      - {include: '$self'}
+      - include: '$self'
+      - include: '#illegal'
       end: ([:]?)|(\s)
     end: \s
   amount:
@@ -208,8 +216,11 @@ repository:
     beginCaptures:
       '0': {name: keyword.operator.assignment.beancount}
     patterns:
-    - include: '#date'
     - include: '#amount'
+    - include: '#date'
+    - name: punctuation.separator.beancount
+      match: \, #FIXME: lazy, would match multiple commas.
+    - include: '#illegal'
     end: \}
     endCaptures:
       '0': {name: keyword.operator.assignment.beancount}
@@ -220,6 +231,7 @@ repository:
       '0': {name: keyword.operator.assignment.beancount}
     patterns:
     - include: '#amount'
+    - include: '#illegal'
     end: (?=(;|\n))
   date:
     name: meta.date.beancount
@@ -239,6 +251,7 @@ repository:
     patterns:
     - include: '#string'
     - include: '#comment'
+    - include: '#illegal'
     end: \n
   string:
     name: string.quoted.double.beancount
