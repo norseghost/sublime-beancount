@@ -29,7 +29,7 @@ patterns:
   match: ^(option)\s+(\".*\")\s+(\".*\")\s*\n
   captures:
     '1': {name: support.function.beancount}
-    '2': {name: support.variable.language.option.beancount}
+    '2': {name: support.variable.beancount}
     '3': {name: string.quoted.double.beancount}
 
 - comment: Plugin directive
