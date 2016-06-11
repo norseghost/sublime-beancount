@@ -36,11 +36,16 @@
 					<key>name</key>
 					<string>entity.name.tag.beancount</string>
 				</dict>
+				<key>4</key>
+				<dict>
+					<key>name</key>
+					<string>comment.line.beancount</string>
+				</dict>
 			</dict>
 			<key>comment</key>
 			<string>Tag directive</string>
 			<key>match</key>
-			<string>^(poptag|pushtag)\s+(#)([A-Za-z0-9\-_/.]+)\s*\n</string>
+			<string>^(poptag|pushtag)\s+(#)([A-Za-z0-9\-_/.]+)\s+(;.*)\s*\n</string>
 			<key>name</key>
 			<string>meta.directive.tag.beancount</string>
 		</dict>
@@ -56,6 +61,11 @@
 				<dict>
 					<key>name</key>
 					<string>string.quoted.double.beancount</string>
+				</dict>
+				<key>3</key>
+				<dict>
+					<key>name</key>
+					<string>comment.line.beancount</string>
 				</dict>
 			</dict>
 			<key>comment</key>
@@ -83,11 +93,16 @@
 					<key>name</key>
 					<string>string.quoted.double.beancount</string>
 				</dict>
+				<key>4</key>
+				<dict>
+					<key>name</key>
+					<string>comment.line.beancount</string>
+				</dict>
 			</dict>
 			<key>comment</key>
 			<string>Option directive</string>
 			<key>match</key>
-			<string>^(option)\s+(\".*\")\s+(\".*\")\s*\n</string>
+			<string>^(option)\s+(\".*\")\s+(\".*\")\s+(;.*)\s*\n</string>
 			<key>name</key>
 			<string>meta.directive.option.beancount</string>
 		</dict>
@@ -114,11 +129,16 @@
 					<key>name</key>
 					<string>string.quoted.double.beancount</string>
 				</dict>
+				<key>5</key>
+				<dict>
+					<key>name</key>
+					<string>comment.line.beancount</string>
+				</dict>
 			</dict>
 			<key>comment</key>
 			<string>Plugin directive</string>
 			<key>match</key>
-			<string>^(plugin)\s+(\"(.*)\")\s+(\".*\")\s*\n</string>
+			<string>^(plugin)\s+(\"(.*)\")\s+(\".*\")\s+(;.*)\s*\n</string>
 			<key>name</key>
 			<string>keyword.operator.directive.beancount</string>
 		</dict>
@@ -166,6 +186,10 @@
 			<string>meta.directive.dated.beancount</string>
 			<key>patterns</key>
 			<array>
+				<dict>
+					<key>include</key>
+					<string>#comments</string>
+				</dict>
 				<dict>
 					<key>include</key>
 					<string>#meta</string>
@@ -226,6 +250,10 @@
 			<array>
 				<dict>
 					<key>include</key>
+					<string>#comments</string>
+				</dict>
+				<dict>
+					<key>include</key>
 					<string>#meta</string>
 				</dict>
 				<dict>
@@ -284,6 +312,10 @@
 			<array>
 				<dict>
 					<key>include</key>
+					<string>#comments</string>
+				</dict>
+				<dict>
+					<key>include</key>
 					<string>#meta</string>
 				</dict>
 				<dict>
@@ -340,6 +372,10 @@
 			<string>meta.directive.dated.beancount</string>
 			<key>patterns</key>
 			<array>
+				<dict>
+					<key>include</key>
+					<string>#comments</string>
+				</dict>
 				<dict>
 					<key>include</key>
 					<string>#meta</string>
@@ -404,6 +440,10 @@
 			<array>
 				<dict>
 					<key>include</key>
+					<string>#comments</string>
+				</dict>
+				<dict>
+					<key>include</key>
 					<string>#meta</string>
 				</dict>
 				<dict>
@@ -464,6 +504,10 @@
 			<string>meta.directive.dated.beancount</string>
 			<key>patterns</key>
 			<array>
+				<dict>
+					<key>include</key>
+					<string>#comments</string>
+				</dict>
 				<dict>
 					<key>include</key>
 					<string>#meta</string>
@@ -538,6 +582,14 @@
 			<array>
 				<dict>
 					<key>include</key>
+					<string>#comments</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#posting</string>
+				</dict>
+				<dict>
+					<key>include</key>
 					<string>#meta</string>
 				</dict>
 				<dict>
@@ -547,14 +599,6 @@
 				<dict>
 					<key>include</key>
 					<string>#link</string>
-				</dict>
-				<dict>
-					<key>include</key>
-					<string>#comments</string>
-				</dict>
-				<dict>
-					<key>include</key>
-					<string>#posting</string>
 				</dict>
 				<dict>
 					<key>include</key>
@@ -822,11 +866,19 @@
 			<key>begin</key>
 			<string>^\s+(?=([A-Z\!]))</string>
 			<key>end</key>
-			<string>(?=\n)</string>
+			<string>(?=(^\s*$|^\S|^\s*[A-Z]))</string>
 			<key>name</key>
 			<string>meta.posting.beancount</string>
 			<key>patterns</key>
 			<array>
+				<dict>
+					<key>include</key>
+					<string>#meta</string>
+				</dict>
+				<dict>
+					<key>include</key>
+					<string>#comments</string>
+				</dict>
 				<dict>
 					<key>include</key>
 					<string>#flag</string>
@@ -853,10 +905,6 @@
 				</dict>
 				<dict>
 					<key>include</key>
-					<string>#comments</string>
-				</dict>
-				<dict>
-					<key>include</key>
 					<string>#illegal</string>
 				</dict>
 			</array>
@@ -864,7 +912,7 @@
 		<key>price</key>
 		<dict>
 			<key>begin</key>
-			<string>\@</string>
+			<string>\@\@?</string>
 			<key>beginCaptures</key>
 			<dict>
 				<key>0</key>
