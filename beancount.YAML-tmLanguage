@@ -238,7 +238,7 @@ repository:
   posting:
     name: meta.posting.beancount
     begin: ^\s+(?=([A-Z\!]))
-    end: (?=\n)
+    end: (?=(^\s*$|^\S|^\s*[A-Z]))
     patterns:
     - include: '#meta'
     - include: '#comments'
