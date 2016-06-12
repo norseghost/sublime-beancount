@@ -9,32 +9,36 @@ patterns:
   match: ;.*
 - comment: Tag directive
   name: meta.directive.tag.beancount
-  match: ^(poptag|pushtag)\s+(#)([A-Za-z0-9\-_/.]+)\s*\n
+  match: ^(poptag|pushtag)\s+(#)([A-Za-z0-9\-_/.]+)\s+(;.*)\s*\n
   captures:
     '1': {name: support.function.beancount}
     '2': {name: keyword.operator.tag.beancount}
     '3': {name: entity.name.tag.beancount}
+    '4': {name: comment.line.beancount}
 - comment: Include directive
   name: meta.directive.include.beancount
   match: ^(include)\s+(\".*\")\s*\n
   captures:
     '1': {name: support.function.beancount}
     '2': {name: string.quoted.double.beancount}
+    '3': {name: comment.line.beancount}
 - comment: Option directive
   name: meta.directive.option.beancount
-  match: ^(option)\s+(\".*\")\s+(\".*\")\s*\n
+  match: ^(option)\s+(\".*\")\s+(\".*\")\s+(;.*)\s*\n
   captures:
     '1': {name: support.function.beancount}
     '2': {name: support.variable.beancount}
     '3': {name: string.quoted.double.beancount}
+    '4': {name: comment.line.beancount}
 - comment: Plugin directive
   name: keyword.operator.directive.beancount
-  match: ^(plugin)\s+(\"(.*)\")\s+(\".*\")\s*\n
+  match: ^(plugin)\s+(\"(.*)\")\s+(\".*\")\s+(;.*)\s*\n
   captures:
     '1': {name: support.function.beancount}
     '2': {name: string.quoted.double.beancount}
     '3': {name: entity.name.function.beancount}
     '4': {name: string.quoted.double.beancount}
+    '5': {name: comment.line.beancount}
 - comment: Open/Close/Pad directive
   name: meta.directive.dated.beancount
   begin: ([0-9]{4})([\-|/])([0-9]{2})([\-|/])([0-9]{2})\s(open|close|pad)
@@ -47,6 +51,7 @@ patterns:
     '6': {name: support.function.beancount}
   end: (?=(^\s*$|^\S))
   patterns:
+  - include: '#comments'
   - include: '#meta'
   - include: '#account'
   - include: '#illegal'
@@ -62,6 +67,7 @@ patterns:
     '6': {name: support.function.directive.beancount}
   end: (?=(^\s*$|^\S))
   patterns:
+  - include: '#comments'
   - include: '#meta'
   - include: '#string'
   - include: '#illegal'
@@ -77,6 +83,7 @@ patterns:
     '6': {name: support.function.directive.beancount}
   end: (?=(^\s*$|^\S))
   patterns:
+  - include: '#comments'
   - include: '#meta'
   - include: '#commodity'
   - include: '#illegal'
@@ -92,6 +99,7 @@ patterns:
     '6': {name: support.function.directive.beancount}
   end: (?=(^\s*$|^\S))
   patterns:
+  - include: '#comments'
   - include: '#meta'
   - include: '#account'
   - include: '#string'
@@ -108,6 +116,7 @@ patterns:
     '6': {name: support.function.directive.beancount}
   end: (?=(^\s*$|^\S))
   patterns:
+  - include: '#comments'
   - include: '#meta'
   - include: '#commodity'
   - include: '#amount'
@@ -124,6 +133,7 @@ patterns:
     '6': {name: support.function.directive.beancount}
   end: (?=(^\s*$|^\S))
   patterns:
+  - include: '#comments'
   - include: '#meta'
   - include: '#account'
   - include: '#amount'
@@ -142,11 +152,11 @@ patterns:
     '8': {name: string.quoted.narration.beancount}
   end: (?=(^\s*$|^\S))
   patterns:
+  - include: '#comments'
+  - include: '#posting'
   - include: '#meta'
   - include: '#tag'
   - include: '#link'
-  - include: '#comments'
-  - include: '#posting'
   - include: '#illegal'
 repository:
   account:
@@ -228,19 +238,20 @@ repository:
   posting:
     name: meta.posting.beancount
     begin: ^\s+(?=([A-Z\!]))
-    end: (?=\n)
+    end: (?=(^\s*$|^\S|^\s*[A-Z]))
     patterns:
+    - include: '#meta'
+    - include: '#comments'
     - include: '#flag'
     - include: '#account'
     - include: '#amount'
     - include: '#cost'
     - include: '#date'
     - include: '#price'
-    - include: '#comments'
     - include: '#illegal'
   price:
     name: meta.price.beancount
-    begin: \@
+    begin: \@\@?
     beginCaptures:
       '0': {name: keyword.operator.assignment.beancount}
     end: (?=(;|\n))
