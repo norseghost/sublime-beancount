@@ -155,7 +155,7 @@ patterns:
   - include: '#illegal'
 - comment: Transaction directive
   name: meta.directive.transaction.beancount
-  begin: ([0-9]{4})([\-|/])([0-9]{2})([\-|/])([0-9]{2})\s+(txn|\*|\!)(?:\s+(".*")(?=\s+"))?\s+(".*?")(?=((?:\s+#[a-zA-z\-]+(?=\s))*(?:\s+\^[a-zA-z\-\.]+(?=\s))*(?:\s+;\s*.*)?)\s)
+  begin: ([0-9]{4})([\-|/])([0-9]{2})([\-|/])([0-9]{2})\s+(txn|[*!&amp;#?%PSTCURM])(?:\s+(".*")(?=\s+"))?\s+(".*?")(?=((?:\s+#[a-zA-z\-]+(?=\s))*(?:\s+\^[a-zA-z\-\.]+(?=\s))*(?:\s+;\s*.*)?)\s)
   beginCaptures:
     '1': {name: constant.numeric.date.year.beancount}
     '2': {name: punctuation.separator.beancount}
@@ -230,7 +230,7 @@ repository:
       '5': {name: constant.numeric.date.day.beancount}
   flag:
     name: keyword.other.beancount
-    match: (?<=\s)(\!)
+    match: (?<=\s)([*!&amp;#?%PSTCURM])
   illegal:
     name: invalid.illegal.unrecognized.beancount
     match: '[^\s]'
