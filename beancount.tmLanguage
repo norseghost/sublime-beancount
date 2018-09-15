@@ -11,6 +11,12 @@
 	<key>patterns</key>
 	<array>
 		<dict>
+			<key>name</key>
+			<string>beancount.orgmode.headline</string>
+			<key>match</key>
+			<string>^\s*[*]+ [^\[\]:\n]*</string>
+		</dict>
+		<dict>
 			<key>comment</key>
 			<string>Comments</string>
 			<key>match</key>

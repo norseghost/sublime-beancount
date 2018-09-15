@@ -5,18 +5,17 @@
 	<key>name</key>
 	<string>Beancount</string>
 	<key>scope</key>
-	<string>source.beancount</string>
+	<string>source.beancount beancount.orgmode.headline</string>
 	<key>settings</key>
 	<dict>
-		<key>shellVariables</key>
-		<array>
-			<dict>
-				<key>name</key>
-				<string>TM_COMMENT_START</string>
-				<key>value</key>
-				<string>; </string>
-			</dict>
-		</array>
+		<key>showInSymbolList</key>
+		<integer>1</integer>
+		<key>symbolTransformation</key>
+		<string>
+			 s/^\s*\*+\s*\z//g;  #Search for *
+ 			s/(?&lt;=\*)\*/  /g; #replace * with two spaces, except first
+			s/^\*( *)\s+(.*)/$1$2/;  #replace first found with a space
+		</string>
 	</dict>
 </dict>
 </plist>
