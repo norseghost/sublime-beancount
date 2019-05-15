@@ -869,7 +869,7 @@
 		<key>meta</key>
 		<dict>
 			<key>begin</key>
-			<string>^\s*([a-z][A-Za-z0-9\-]+)([:])\s</string>
+			<string>^\s*([a-z][A-Za-z0-9\-_]+)([:])\s</string>
 			<key>beginCaptures</key>
 			<dict>
 				<key>1</key>
