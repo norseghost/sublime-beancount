@@ -715,21 +715,16 @@
 				<key>1</key>
 				<dict>
 					<key>name</key>
-					<string>keyword.operator.modifier.beancount</string>
-				</dict>
-				<key>2</key>
-				<dict>
-					<key>name</key>
 					<string>constant.numeric.currency.beancount</string>
 				</dict>
-				<key>3</key>
+				<key>2</key>
 				<dict>
 					<key>name</key>
 					<string>entity.type.commodity.beancount</string>
 				</dict>
 			</dict>
 			<key>match</key>
-			<string>([\-|\+]?)((?:\d|\d[\d,]*\d)(?:\.\d*)?)\s*([A-Z][A-Z0-9\'\.\_\-]{0,22}[A-Z0-9])</string>
+			<string>(([\-|\+]?)(?:\d|\d[\d,]*\d)(?:\.\d*)?)\s*([A-Z][A-Z0-9\'\.\_\-]{0,22}[A-Z0-9])</string>
 			<key>name</key>
 			<string>meta.amount.beancount</string>
 		</dict>
