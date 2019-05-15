@@ -193,11 +193,10 @@ repository:
       - include: '#illegal'
   amount:
     name: meta.amount.beancount
-    match: ([\-|\+]?)((?:\d|\d[\d,]*\d)(?:\.\d*)?)\s*([A-Z][A-Z0-9\'\.\_\-]{0,22}[A-Z0-9])
+    match: (([\-|\+]?)(?:\d|\d[\d,]*\d)(?:\.\d*)?)\s*([A-Z][A-Z0-9\'\.\_\-]{0,22}[A-Z0-9])
     captures:
-      '1': {name: keyword.operator.modifier.beancount}
-      '2': {name: constant.numeric.currency.beancount}
-      '3': {name: entity.type.commodity.beancount}
+      '1': {name: constant.numeric.currency.beancount}
+      '2': {name: entity.type.commodity.beancount}
   comments:
     match: (?<=\s)(;.*)(?=\n)
     captures:
