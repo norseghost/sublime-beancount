@@ -902,6 +902,10 @@
 				</dict>
 				<dict>
 					<key>include</key>
+					<string>#number</string>
+				</dict>
+				<dict>
+					<key>include</key>
 					<string>#illegal</string>
 				</dict>
 			</array>
