@@ -250,6 +250,7 @@ repository:
     - include: '#comments'
     - include: '#date'
     - include: '#amount'
+    - include: '#number'
     - include: '#illegal'
   number:
     match: (([\-|\+]?)(?:\d|\d[\d,]*\d)(?:\.\d*)?)
