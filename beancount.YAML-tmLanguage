@@ -249,6 +249,7 @@ repository:
     - include: '#string'
     - include: '#comments'
     - include: '#date'
+    - include: '#amount'
     - include: '#illegal'
   posting:
     name: meta.posting.beancount
