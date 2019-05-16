@@ -906,6 +906,19 @@
 				</dict>
 			</array>
 		</dict>
+		<key>number</key>
+		<dict>
+			<key>begin</key>
+			<string>(([\-|\+]?)(?:\d|\d[\d,]*\d)(?:\.\d*)?)</string>
+			<key>begin</key>
+			<dict>
+				<key>1</key>
+				<dict>
+					<key>name</key>
+					<string>constant.numeric.currency.beancount</string>
+				</dict>
+			</dict>
+		</dict>
 		<key>posting</key>
 		<dict>
 			<key>begin</key>
