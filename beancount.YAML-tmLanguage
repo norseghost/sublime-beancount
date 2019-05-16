@@ -248,6 +248,7 @@ repository:
     patterns:
     - include: '#string'
     - include: '#comments'
+    - include: '#date'
     - include: '#illegal'
   posting:
     name: meta.posting.beancount
