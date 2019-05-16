@@ -898,6 +898,10 @@
 				</dict>
 				<dict>
 					<key>include</key>
+					<string>#amount</string>
+				</dict>
+				<dict>
+					<key>include</key>
 					<string>#illegal</string>
 				</dict>
 			</array>
