@@ -252,8 +252,7 @@ repository:
     - include: '#amount'
     - include: '#illegal'
   number:
-    name: meta.number.beancount
-    begin: (([\-|\+]?)(?:\d|\d[\d,]*\d)(?:\.\d*)?)
+    match: (([\-|\+]?)(?:\d|\d[\d,]*\d)(?:\.\d*)?)
     captures:
       '1': {name: constant.numeric.currency.beancount}
   posting:
