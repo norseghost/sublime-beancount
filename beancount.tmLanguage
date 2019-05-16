@@ -894,6 +894,10 @@
 				</dict>
 				<dict>
 					<key>include</key>
+					<string>#date</string>
+				</dict>
+				<dict>
+					<key>include</key>
 					<string>#illegal</string>
 				</dict>
 			</array>
