@@ -1,6 +1,5 @@
 {
         "scope": "source.beancount meta.directive.option.beancount support.variable.language.option.beancount",
-
         "completions":
         [
                 { "trigger": "d", "contents": "documents" },

@@ -5,7 +5,7 @@
   <key>name</key>
   <string>Beancount</string>
   <key>scope</key>
-  <string>source.beancount beancount.orgmode.headline</string>
+  <string>source.beancount markup.section.beancount</string>
   <key>settings</key>
   <dict>
     <key>showInSymbolList</key>
