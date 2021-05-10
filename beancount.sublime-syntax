@@ -7,7 +7,9 @@ variables:
   date: '\d{4}-\d{2}-\d{2}'
   flag: '[^a-z\s]'
   string: '"(?:[^"]|\\.)*"'
-  account: '(Assets|Liabilities|Equity|Income|Expenses)((?::[A-Z0-9][[:alnum:]-_]+)+)'
+  accountroot: '(Assets|Liabilities|Equity|Income|Expenses)'
+  accountcomponent: '[A-Z0-9][[:alnum:]-_]'
+  account: '{{accountroot}}((?::{{accountcomponent}}+)+)'
   number: '[0-9]+(?:,[0-9]{3})*(?:\.[0-9]*)?'
   currency: "[A-Z][A-Z_'.-]*"
   amount: '[+-]?{{number}}[ \t]+{{currency}}'
@@ -199,15 +201,15 @@ contexts:
 
   postings:
     - include: directive-end
-    - match: '^[ \t]+({{flag}}{0,1})[ \t]?(?={{account}}[ \t]+({{amount}})?)'
+    - match: '^[ \t]+({{flag}}?)[ \t]*(?={{account}}[ \t]+({{amount}})?)'
       captures:
         1: meta.flag.beancount keyword.other.beancount
       push: [ optional_price, optional_cost, amount, account ]
-    - match: '^[ \t]+({{flag}}{0,1})[ \t]?(?={{account}})'
+    - match: '^[ \t]+({{flag}}?)[ \t]*(?={{account}})'
       captures:
         1: meta.flag.beancount keyword.other.beancount
       push: account
-    - match: '^[ \t]+({{flag}}{0,1})[ \t]?(?=[ALEI])'
+    - match: '^[ \t]+({{flag}}?)[ \t]*(?=[ALEI])'
       captures:
         1: meta.flag.beancount keyword.other.beancount
       push: account
@@ -266,11 +268,17 @@ contexts:
 
   account:
     - meta_scope: meta.account.beancount
-    - match: '{{account}}'
+    - match: '({{accountroot}})'
       captures:
-        1: meta.account.root.beancount variable.account.beancount
-      scope: meta.account.beancount variable.account.beancount
-      pop: true
+        1: meta.account.root.beancount constant.language.beancount
+      set:
+        - match: '(:)({{accountcomponent}}*)'
+          captures:
+            1: punctuation.separator.beancount
+            2: variable.account.beancount
+          scope: meta.account.beancount
+        - match: (?=\s)
+          pop: true
 
   link:
     - match: '(\^)({{linkchars}}*)'

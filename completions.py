@@ -11,7 +11,7 @@ def sub_accounts(x):
     output = set()
     if len(x):
         output = { sans_root(account_name) for account_name in x if sans_root(account_name) }
-        output.union(sub_accounts(output))
+        output.update(sub_accounts(output))
 
     return output
 
@@ -30,8 +30,8 @@ class BeancountCompletions(sublime_plugin.EventListener):
         cmd = ["/usr/bin/env", "python3", "sublime-beancount/util/index_completions.py", self.beanfile]
         proc = subprocess.Popen(cmd, stdout=subprocess.PIPE)
 
-        self.index = pickle.load(proc.stdout)   
-        self.index['meta.account.beancount'].union(sub_accounts(self.index['meta.account.beancount']))
+        self.index = pickle.load(proc.stdout)
+        self.index['meta.account.beancount'].update(sub_accounts(self.index['meta.account.beancount']))
 
         print("sublime-beancount: Updated index")
         return
@@ -42,19 +42,10 @@ class BeancountCompletions(sublime_plugin.EventListener):
         self.update_index(view)
         return
 
-    def on_modified_async(self, view):
-        if not view.settings().has('beanfile'):
-            return
-        self.update_index(view)
-        return
-
     def on_post_save_async(self, view):
         if not view.settings().has('beanfile'):
             return
-
-        # Update index
-        self.beanfile = view.settings().get('beanfile')
-        self.update_index()
+        self.update_index(view)
         return
 
     def on_query_completions(self, view, prefix, locations):
@@ -62,20 +53,19 @@ class BeancountCompletions(sublime_plugin.EventListener):
             return []
 
         if not self.index:
-            self.on_load_async(view)
+            self.update_index(view)
 
         prefix = prefix.lower()
         out = []
 
+        # Use context of preceding word
         if view.classify(locations[0]) & sublime.CLASS_WORD_END != 0:
-            print("Moving cursor back")
-            print(prefix)
             locations[0] -= 1
 
         for k in self.index.keys():
             if view.match_selector(locations[0], k):
-                print("sublime-beancount: Completion for " + k)
-                print(self.index[k])
+                # print("sublime-beancount: Completion for " + k)
+                # print(self.index[k])
                 if len(prefix):
                     for comp in self.index[k]:
                         if comp.lower().startswith(prefix):
@@ -85,6 +75,15 @@ class BeancountCompletions(sublime_plugin.EventListener):
 
         return out
 
-    # def on_query_context(self, view, key, operator, operand, match_all):
-    #     print(operator)
-    #     return
+    def guess_decimal_column(self, view):
+        regions = view.find_by_selector("meta.amount.beancount")
+        for r in regions:
+            print(view.substr(r))
+
+    def on_query_context(self, view, key, operator, operand, match_all):
+        if view.syntax().scope != "source.beancount":
+            return
+
+        # self.guess_decimal_column(view)
+        return False
+
