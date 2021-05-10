@@ -10,7 +10,7 @@ variables:
   account: '(Assets|Liabilities|Equity|Income|Expenses)((?::[A-Z0-9][[:alnum:]-_]+)+)'
   number: '[0-9]+(?:,[0-9]{3})*(?:\.[0-9]*)?'
   currency: "[A-Z][A-Z_'.-]*"
-  amount: '[+-]?{{number}}\s+{{currency}}'
+  amount: '[+-]?{{number}}[ \t]+{{currency}}'
   linkchars: '[A-z0-9_-]'
   tagchars: '[A-z0-9_-]'
 
@@ -20,17 +20,19 @@ contexts:
       captures:
         1: comment.line.beancount
 
+  illegal:
+    - match: '[^\s]'
+      scope: invalid.illegal.unrecognized.beancount
+
   main:
     - match: '(^[*]+)\s*'
       comment: headline
       captures:
         1: punctuation.definition.keyword.beancount
       push: headline
-    - match: '^({{date}})\s+'
-      comment: directive
-      captures:
-        1: constant.numeric.date.beancount
-      push: directive
+    - match: '^(?={{date}}[ \t]+)'
+      comment: dated directive
+      push: [directive, date]
     - match: ';.*'
       scope: comment.line.beancount
 
@@ -39,7 +41,7 @@ contexts:
       scope: keyword.control.option.beancount
       set:
       - meta_scope: meta.directive.option.beancount
-      - match: '(?={{string}}\s+{{string}})'
+      - match: '(?={{string}}[ \t]+{{string}})'
         set: [string, string]
 
     - match: '\b(plugin)\b'
@@ -70,86 +72,92 @@ contexts:
       comment: open directive
       scope: keyword.control.open.beancount
       set:
-      - meta_scope: meta.directive.open.beancount
-      - match: '\s+'
-        scope: meta.account.beancount
-      - match: '(?={{account}}\s+{{currency}})'
+      - match: '(?={{account}}[ \t]+{{currency}})'
         set: [metadata, currency, account]
       - match: '(?={{account}})'
         set: [metadata, account]
+      - include: illegal
 
     - match: '\b(close)\b'
       comment: close directive
       scope: keyword.control.close.beancount
       set:
       - meta_scope: meta.directive.close.beancount
-      - match: (?={{account}})
+      - match: '(?={{account}})'
         set: [metadata, account]
+      - include: illegal
 
     - match: '\b(commodity)\b'
       comment: commodity directive
       scope: keyword.control.commodity.beancount
       set:
       - meta_scope: meta.directive.commodity.beancount
-      - include: directive-end
-      - match: ''
-        push: [metadata, currency]
+      - match: '(?={{currency}})'
+        set: [metadata, currency]
+      - include: illegal
 
     - match: '\b(balance)\b'
       comment: balance directive
       scope: keyword.control.balance.beancount
       set:
       - meta_scope: meta.directive.balance.beancount
-      - match: '(?={{account}}\s+{{amount}})'
+      - match: '(?={{account}}[ \t]+{{amount}})'
         set: [metadata, amount, account]
+      - include: illegal
 
     - match: '\b(pad)\b'
       comment: pad directive
       scope: keyword.control.pad.beancount
       set:
       - meta_scope: meta.directive.balance.beancount
-      - match: '(?={{account}}\s+{{account}})'
+      - match: '(?={{account}}[ \t]+{{account}})'
         set: [metadata, account, account]
+      - include: illegal
 
     - match: '\b(note)\b'
       comment: note directive
       scope: keyword.control.note.beancount
       set:
       - meta_scope: meta.directive.note.beancount
-      - match: '(?={{account}}\s+{{string}})'
+      - match: '(?={{account}}[ \t]+{{string}})'
         set: [metadata, string, account]
+      - include: illegal
 
     - match: '\b(document)\b'
       comment: document directive
       scope: keyword.control.document.beancount
       set:
       - meta_scope: meta.directive.document.beancount
-      - match: '(?={{account}}\s+{{string}})'
+      - match: '(?={{account}}[ \t]+{{string}})'
         set: [metadata, string, account]
+      - include: illegal
 
     - match: '\b(price)\b'
       comment: price directive
       scope: keyword.control.price.beancount
       set:
       - meta_scope: meta.directive.price.beancount
-      - match: '(?={{currency}}\s+{{amount}})'
+      - match: '(?={{currency}}[ \t]+{{amount}})'
         set: [metadata, amount, currency]
+      - include: illegal
 
     - match: '\b(event)\b'
       comment: event directive
       scope: keyword.control.event.beancount
       set:
       - meta_scope: meta.directive.event.beancount
-      - match: '(?={{account}}\s+{{string}}\s+{{string}})'
+      - match: '(?={{account}}[ \t]+{{string}}[ \t]+{{string}})'
         set: [metadata, string, string, account]
+      - include: illegal
 
     - match: '\b(query)\b'
       comment: query directive
       scope: keyword.control.query.beancount
       set:
       - meta_scope: meta.directive.query.beancount
-      - match: '(?={{string}}\s+{{string}})'
+      - match: '(?={{string}}[ \t]+{{string}})'
         set: [metadata, string, string]
+      - include: illegal
 
     - match: '\b(custom)\b'
       comment: custom directive
@@ -158,13 +166,17 @@ contexts:
       - meta_scope: meta.directive.custom.beancount
       - match: '(?={{string}})'
         set: [metadata, string]
+      - include: illegal
 
     - match: '(txn|[*])'
       comment: completed transaction
       scope: keyword.control.transaction.beancount
       set: transaction
-    - match: '{{flag}}'
+
+    - match: '({{flag}})'
       comment: flagged transaction
+      captures:
+        1: meta.flag.beancount keyword.other.beancount
       scope: keyword.control.transaction.flagged.beancount
       set: transaction
 
@@ -174,44 +186,53 @@ contexts:
 
   transaction:
     - meta_scope: meta.directive.transaction.beancount
-    - include: directive-end
     - match: '({{string}})[ \t]+({{string}})'
       captures:
         1: string.quoted.double.payee.beancount meta.payee.beancount
         2: string.quoted.double.narration.beancount meta.narration.beancount
-      push: [postings, metadata, linkstags]
+      set: [postings, metadata, linkstags]
     - match: '({{string}})'
       captures:
         1: string.quoted.double.narration.beancount meta.narration.beancount
-      push: [postings, metadata, linkstags]
+      set: [postings, metadata, linkstags]
+    - include: illegal
 
   postings:
-    - meta_content_scope: meta.posting.beancount
     - include: directive-end
-    - match: '^\s+(?={{account}}\s*$)'
-      push: account
-    - match: '^\s+(?={{account}}\s*[0-9]$)'
-      push: [ amount, account ]
-    - match: '^\s+'
-      scope: meta.account.root.beancount
+    - match: '^[ \t]+({{flag}}{0,1})[ \t]?(?={{account}}[ \t]+({{amount}})?)'
+      captures:
+        1: meta.flag.beancount keyword.other.beancount
       push: [ optional_price, optional_cost, amount, account ]
+    - match: '^[ \t]+({{flag}}{0,1})[ \t]?(?={{account}})'
+      captures:
+        1: meta.flag.beancount keyword.other.beancount
+      push: account
+    - match: '^[ \t]+({{flag}}{0,1})[ \t]?(?=[ALEI])'
+      captures:
+        1: meta.flag.beancount keyword.other.beancount
+      push: account
+    - include: illegal
+
+    # - match: '^[ \t]+'
+    #   scope: meta.account.root.beancount
+    #   push: [ optional_price, optional_cost, amount, account ]
 
   linkstags:
-    - match: '\n'
+    - match: '(?=\^)'
+      push: link
+    - match: '(?=#)'
+      push: tag
+    - match: '(?=^)'
       pop: true
-    - match: ''
-      push:
-      - meta_scope: 'meta.transaction.linkstags.beancount'
-      - include: link
-      - include: tag
+    - include: illegal
 
   metadata:
-    - match: '^\s+([a-z][A-z0-9_-]+)([:])\s+'
+    - match: '^[ \t]+([a-z][A-z0-9_-]+)([:])\s+'
       captures:
         1: keyword.operator.metadata.beancount meta.metadata.key.beancount
         2: punctuation.separator.beancount
       push:
-        - meta_scope: meta.metadata.value.beancount
+        - meta_content_scope: meta.metadata.value.beancount
         - include: string
         - include: account
         - include: currency_list
@@ -221,14 +242,19 @@ contexts:
         - include: number
         - match: ''
           pop: true
-    - match: '^(?!(\s+([a-z][A-z0-9_-]+)([:])\s+))'
+    - match: '(?=^)'
       pop: true
 
   date:
-    - match: '({{date}})'
+    - match: '(\d{4})(-)(\d{2})(-)(\d{2})'
+      scope: constant.numeric.date.beancount
       comment: YYYY-MM-YY date
       captures:
-        1: constant.numeric.date.beancount
+        1: constant.numeric.date.year.beancount
+        2: punctuation.separator.beancount
+        3: constant.numeric.date.month.beancount
+        4: punctuation.separator.beancount
+        5: constant.numeric.date.day.beancount
       pop: true
 
   string:
@@ -271,17 +297,19 @@ contexts:
       pop: true
 
   amount:
-    - meta_scope: meta.amount.beancount
     - match: '([+-]?{{number}})\s*$'
+      scope: meta.amount.beancount
       comment: Capture the start of an amount for decimal alignment
       captures:
         1: meta.number.beancount constant.numeric.beancount
     - match: '([+]?{{number}})\s+({{currency}})'
+      scope: meta.amount.beancount
       captures:
         1: meta.number.beancount constant.numeric.beancount
         2: meta.currency.beancount storage.type.currency.beancount
       pop: true
     - match: '([-]{{number}})\s+({{currency}})'
+      scope: meta.amount.beancount
       captures:
         1: meta.number.negative.beancount constant.numeric.beancount
         2: meta.currency.beancount storage.type.currency.beancount
