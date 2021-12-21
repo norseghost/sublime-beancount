@@ -1,5 +1,5 @@
 {
-  "word_separators": "./\\()\"'-,.;<>~!@#$%^&*|+=[]{}`~?",
+  "word_separators": "./\\()\"'-,.:;<>~!@#$%^&*|+=[]{}`~?",
   "auto_complete_triggers":
   [
           {
