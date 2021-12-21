@@ -8,8 +8,8 @@ variables:
   flag: '[^a-z\s]'
   string: '"(?:[^"]|\\.)*"'
   accountroot: '(Assets|Liabilities|Equity|Income|Expenses)'
-  accountcomponent: '[A-Z0-9][[:alnum:]-_]'
-  account: '{{accountroot}}((?::{{accountcomponent}}+)+)'
+  accountcomponent: '[A-Z0-9][[:alnum:]_-]*'
+  account: '{{accountroot}}((?::{{accountcomponent}})+)'
   number: '[0-9]+(?:,[0-9]{3})*(?:\.[0-9]*)?'
   currency: "[A-Z][A-Z_'.-]*"
   amount: '[+-]?{{number}}[ \t]+{{currency}}'
@@ -66,7 +66,7 @@ contexts:
 
   headline:
     - match: '[^\[\]\n]*'
-      scope: entity.name.section.beancount markup.section.beancount meta.toc-list
+      scope: meta.toc-list.beancount
       pop: true
 
   directive:
@@ -103,8 +103,11 @@ contexts:
       scope: keyword.control.balance.beancount
       set:
       - meta_scope: meta.directive.balance.beancount
-      - match: '(?={{account}}[ \t]+{{amount}})'
+      - match: '(?={{account}}([ \t]+({{amount}})?)?)'
         set: [metadata, amount, account]
+      - match: '(?={{accountcomponent}})'
+        comment: Partial account
+        push: account
       - include: illegal
 
     - match: '\b(pad)\b'
@@ -114,6 +117,9 @@ contexts:
       - meta_scope: meta.directive.balance.beancount
       - match: '(?={{account}}[ \t]+{{account}})'
         set: [metadata, account, account]
+      - match: '(?={{accountcomponent}})'
+        comment: Partial account
+        push: account
       - include: illegal
 
     - match: '\b(note)\b'
@@ -123,6 +129,9 @@ contexts:
       - meta_scope: meta.directive.note.beancount
       - match: '(?={{account}}[ \t]+{{string}})'
         set: [metadata, string, account]
+      - match: '(?={{accountcomponent}})'
+        comment: Partial account
+        push: account
       - include: illegal
 
     - match: '\b(document)\b'
@@ -199,22 +208,6 @@ contexts:
       set: [postings, metadata, linkstags]
     - include: illegal
 
-  postings:
-    - include: directive-end
-    - match: '^[ \t]+({{flag}}?)[ \t]*(?={{account}}[ \t]+([+-]?{{number}}))'
-      captures:
-        1: meta.flag.beancount keyword.other.beancount
-      push: [ optional_price, optional_cost, posting_amount, account ]
-    - match: '^[ \t]+({{flag}}?)[ \t]*(?={{account}})'
-      captures:
-        1: meta.flag.beancount keyword.other.beancount
-      push: account
-    - match: '^[ \t]+({{flag}}?)[ \t]*(?=[ALEI])'
-      captures:
-        1: meta.flag.beancount keyword.other.beancount
-      push: account
-    - include: illegal
-
   linkstags:
     - match: '(?=\^)'
       push: link
@@ -229,8 +222,19 @@ contexts:
       captures:
         1: keyword.operator.metadata.beancount meta.metadata.key.beancount
         2: punctuation.separator.beancount
-      push:
-        - meta_content_scope: meta.metadata.value.beancount
+      push: metadata_value
+    - match: '^[ \t]+([a-z][A-z0-9_-]+)'
+      captures:
+        1: keyword.operator.metadata.beancount meta.metadata.key.beancount
+      push: metadata_value
+    - match: '(?=^)'
+      pop: true
+    - include: illegal
+
+  metadata_value:
+    - match: ''
+      set:
+        - meta_scope: meta.metadata.value.beancount
         - include: string
         - include: account
         - include: currency_list
@@ -238,10 +242,30 @@ contexts:
         - include: tag
         - include: amount
         - include: number
-        - match: ''
+        - match: '([^\s]|$)'
           pop: true
-    - match: '(?=^)'
-      pop: true
+
+  postings:
+    - include: directive-end
+    - match: '^[ \t]+({{flag}}(?=\t+))?'
+      captures:
+        1: meta.flag.beancount keyword.other.beancount
+      push: posting_leg
+    - include: illegal
+
+  posting_leg:
+    - match: ''
+      set:
+        - meta_scope: meta.posting.beancount
+        - match: '(?={{account}}[ \t]+([+-]?{{number}}))'
+          push: [ optional_price, optional_cost, amount, account ]
+        - match: '(?={{account}}[ \t]*$)'
+          push: account
+        - match: '(?={{accountcomponent}})'
+          comment: Partial account
+          push: account
+        - match: '(?=\n)'
+          pop: true
 
   date:
     - match: '(\d{4})(-)(\d{2})(-)(\d{2})'
@@ -276,20 +300,23 @@ contexts:
         - match: (?=\s)
           pop: true
 
+  account_expected:
+    - include: account
+
   link:
     - match: '(\^)({{linkchars}}*)'
       scope: meta.link.beancount
       captures:
-        1: keyword.operator.link.beancount entity.name.function
-        2: markup.underline.link entity.name.function
+        1: keyword.operator.link.beancount
+        2: markup.underline.link
       pop: true
 
   tag:
     - match: '(#)({{tagchars}}*)'
       scope: meta.tag.beancount
       captures:
-        1: keyword.operator.tag.beancount entity.name.class
-        2: entity.name.tag.beancount entity.name.class
+        1: keyword.operator.tag.beancount
+        2: entity.name.tag.beancount
       pop: true
 
   number:
@@ -301,11 +328,6 @@ contexts:
       pop: true
 
   amount:
-    - match: '([+-]?{{number}})\s*$'
-      scope: meta.amount.beancount
-      comment: Capture the start of an amount for decimal alignment
-      captures:
-        1: meta.number.beancount constant.numeric.beancount
     - match: '([+]?{{number}})\s+({{currency}})'
       scope: meta.amount.beancount
       captures:
@@ -314,25 +336,6 @@ contexts:
       pop: true
     - match: '([-]{{number}})\s+({{currency}})'
       scope: meta.amount.beancount
-      captures:
-        1: meta.number.negative.beancount constant.numeric.beancount
-        2: meta.currency.beancount storage.type.currency.beancount
-      pop: true
-
-  posting_amount:
-    - match: '([+-]?{{number}})\s*$'
-      scope: meta.amount.posting.beancount
-      comment: Capture the start of an amount for decimal alignment
-      captures:
-        1: meta.number.beancount constant.numeric.beancount
-    - match: '([+]?{{number}})\s+({{currency}})'
-      scope: meta.amount.posting.beancount
-      captures:
-        1: meta.number.beancount constant.numeric.beancount
-        2: meta.currency.beancount storage.type.currency.beancount
-      pop: true
-    - match: '([-]{{number}})\s+({{currency}})'
-      scope: meta.amount.posting.beancount
       captures:
         1: meta.number.negative.beancount constant.numeric.beancount
         2: meta.currency.beancount storage.type.currency.beancount
