@@ -11,7 +11,7 @@ variables:
   accountcomponent: '[A-Z0-9][[:alnum:]_-]*'
   account: '{{accountroot}}((?::{{accountcomponent}})+)'
   number: '[0-9]+(?:,[0-9]{3})*(?:\.[0-9]*)?'
-  currency: "[A-Z][A-Z_'.-]*"
+  currency: "[A-Z][A-Z0-9_'.-]*"
   amount: '[+-]?{{number}}[ \t]+{{currency}}'
   linkchars: '[A-z0-9_-]'
   tagchars: '[A-z0-9_-]'
