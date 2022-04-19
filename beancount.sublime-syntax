@@ -1,0 +1,393 @@
+%YAML 1.2
+---
+name: Beancount
+file_extensions: [bean, beancount]
+scope: source.beancount
+variables:
+  date: '\d{4}-\d{2}-\d{2}'
+  flag: '[^a-z\s]'
+  string: '"(?:[^"]|\\.)*"'
+  accountroot: '(Assets|Liabilities|Equity|Income|Expenses)'
+  accountcomponent: '[A-Z0-9][[:alnum:]_-]*'
+  account: '{{accountroot}}((?::{{accountcomponent}})+)'
+  number: '[0-9]+(?:,[0-9]{3})*(?:\.[0-9]*)?'
+  currency: "[A-Z][A-Z0-9_'.-]*"
+  amount: '[+-]?{{number}}[ \t]+{{currency}}'
+  linkchars: '[A-z0-9_-]'
+  tagchars: '[A-z0-9_-]'
+
+contexts:
+  prototype:
+    - match: '(?<=\s)(;.*)(?=\n)'
+      captures:
+        1: comment.line.beancount
+
+  illegal:
+    - match: '[^\s]'
+      scope: invalid.illegal.unrecognized.beancount
+
+  main:
+    - match: '(^[*]+)\s*'
+      comment: headline
+      captures:
+        1: punctuation.definition.keyword.beancount
+      push: headline
+    - match: '^(?={{date}}[ \t]+)'
+      comment: dated directive
+      push: [directive, date]
+    - match: ';.*'
+      scope: comment.line.beancount
+
+    - match: '\b(option)\b'
+      comment: option directive
+      scope: keyword.control.option.beancount
+      set:
+      - meta_scope: meta.directive.option.beancount
+      - match: '(?={{string}}[ \t]+{{string}})'
+        set: [string, string]
+
+    - match: '\b(plugin)\b'
+      comment: plugin directive
+      scope: keyword.control.plugin.beancount
+      set:
+      - meta_scope: meta.directive.plugin.beancount
+      - match: '{{string}}'
+        scope: meta.include.plugin.beancount
+        pop: true
+
+    - match: '\b(include)\b'
+      comment: option directive
+      scope: keyword.control.include.beancount
+      set:
+      - meta_scope: meta.directive.include.beancount
+      - match: '{{string}}'
+        scope: meta.include.path.beancount
+        pop: true
+
+  headline:
+    - match: '[^\[\]\n]*'
+      scope: meta.toc-list.beancount
+      pop: true
+
+  directive:
+    - match: '\b(open)\b'
+      comment: open directive
+      scope: keyword.control.open.beancount
+      set:
+      - match: '(?={{account}}[ \t]+{{currency}})'
+        set: [metadata, currency, account]
+      - match: '(?={{account}})'
+        set: [metadata, account]
+      - include: illegal
+
+    - match: '\b(close)\b'
+      comment: close directive
+      scope: keyword.control.close.beancount
+      set:
+      - meta_scope: meta.directive.close.beancount
+      - match: '(?={{account}})'
+        set: [metadata, account]
+      - include: illegal
+
+    - match: '\b(commodity)\b'
+      comment: commodity directive
+      scope: keyword.control.commodity.beancount
+      set:
+      - meta_scope: meta.directive.commodity.beancount
+      - match: '(?={{currency}})'
+        set: [metadata, currency]
+      - include: illegal
+
+    - match: '\b(balance)\b'
+      comment: balance directive
+      scope: keyword.control.balance.beancount
+      set:
+      - meta_scope: meta.directive.balance.beancount
+      - match: '(?={{account}}([ \t]+({{amount}})?)?)'
+        set: [metadata, amount, account]
+      - match: '(?={{accountcomponent}})'
+        comment: Partial account
+        push: account
+      - include: illegal
+
+    - match: '\b(pad)\b'
+      comment: pad directive
+      scope: keyword.control.pad.beancount
+      set:
+      - meta_scope: meta.directive.balance.beancount
+      - match: '(?={{account}}[ \t]+{{account}})'
+        set: [metadata, account, account]
+      - match: '(?={{accountcomponent}})'
+        comment: Partial account
+        push: account
+      - include: illegal
+
+    - match: '\b(note)\b'
+      comment: note directive
+      scope: keyword.control.note.beancount
+      set:
+      - meta_scope: meta.directive.note.beancount
+      - match: '(?={{account}}[ \t]+{{string}})'
+        set: [metadata, string, account]
+      - match: '(?={{accountcomponent}})'
+        comment: Partial account
+        push: account
+      - include: illegal
+
+    - match: '\b(document)\b'
+      comment: document directive
+      scope: keyword.control.document.beancount
+      set:
+      - meta_scope: meta.directive.document.beancount
+      - match: '(?={{account}}[ \t]+{{string}})'
+        set: [metadata, string, account]
+      - include: illegal
+
+    - match: '\b(price)\b'
+      comment: price directive
+      scope: keyword.control.price.beancount
+      set:
+      - meta_scope: meta.directive.price.beancount
+      - match: '(?={{currency}}[ \t]+{{amount}})'
+        set: [metadata, amount, currency]
+      - include: illegal
+
+    - match: '\b(event)\b'
+      comment: event directive
+      scope: keyword.control.event.beancount
+      set:
+      - meta_scope: meta.directive.event.beancount
+      - match: '(?={{account}}[ \t]+{{string}}[ \t]+{{string}})'
+        set: [metadata, string, string, account]
+      - include: illegal
+
+    - match: '\b(query)\b'
+      comment: query directive
+      scope: keyword.control.query.beancount
+      set:
+      - meta_scope: meta.directive.query.beancount
+      - match: '(?={{string}}[ \t]+{{string}})'
+        set: [metadata, string, string]
+      - include: illegal
+
+    - match: '\b(custom)\b'
+      comment: custom directive
+      scope: keyword.control.custom.beancount
+      set:
+      - meta_scope: meta.directive.custom.beancount
+      - match: '(?={{string}})'
+        set: [metadata, string]
+      - include: illegal
+
+    - match: '(txn|[*])'
+      comment: completed transaction
+      scope: keyword.control.transaction.beancount
+      set: transaction
+
+    - match: '({{flag}})'
+      comment: flagged transaction
+      captures:
+        1: meta.flag.beancount keyword.other.beancount
+      scope: keyword.control.transaction.flagged.beancount
+      set: transaction
+
+  directive-end:
+    - match: '(?=(^$|^\S))'
+      pop: true
+
+  transaction:
+    - meta_scope: meta.directive.transaction.beancount
+    - match: '({{string}})[ \t]+({{string}})'
+      captures:
+        1: string.quoted.double.payee.beancount meta.payee.beancount
+        2: string.quoted.double.narration.beancount meta.narration.beancount
+      set: [postings, metadata, linkstags]
+    - match: '({{string}})'
+      captures:
+        1: string.quoted.double.narration.beancount meta.narration.beancount
+      set: [postings, metadata, linkstags]
+    - include: illegal
+
+  linkstags:
+    - match: '(?=\^)'
+      push: link
+    - match: '(?=#)'
+      push: tag
+    - match: '(?=^)'
+      pop: true
+    - include: illegal
+
+  metadata:
+    - match: '^[ \t]+([a-z][A-z0-9_-]+)([:])\s+'
+      captures:
+        1: keyword.operator.metadata.beancount meta.metadata.key.beancount
+        2: punctuation.separator.beancount
+      push: metadata_value
+    - match: '^[ \t]+([a-z][A-z0-9_-]+)'
+      captures:
+        1: keyword.operator.metadata.beancount meta.metadata.key.beancount
+      push: metadata_value
+    - match: '(?=^)'
+      pop: true
+    - include: illegal
+
+  metadata_value:
+    - match: ''
+      set:
+        - meta_scope: meta.metadata.value.beancount
+        - include: string
+        - include: account
+        - include: currency_list
+        - include: date
+        - include: tag
+        - include: amount
+        - include: number
+        - match: '([^\s]|$)'
+          pop: true
+
+  postings:
+    - include: directive-end
+    - match: '^[ \t]+({{flag}}(?=\t+))?'
+      captures:
+        1: meta.flag.beancount keyword.other.beancount
+      push: posting_leg
+    - include: illegal
+
+  posting_leg:
+    - match: ''
+      set:
+        - meta_scope: meta.posting.beancount
+        - match: '(?={{account}}[ \t]+([+-]?{{number}}))'
+          push: [ optional_price, optional_cost, amount, account ]
+        - match: '(?={{account}}[ \t]*$)'
+          push: account
+        - match: '(?={{accountcomponent}})'
+          comment: Partial account
+          push: account
+        - match: '(?=\n)'
+          pop: true
+
+  date:
+    - match: '(\d{4})(-)(\d{2})(-)(\d{2})'
+      scope: constant.numeric.date.beancount
+      comment: YYYY-MM-YY date
+      captures:
+        1: constant.numeric.date.year.beancount
+        2: punctuation.separator.beancount
+        3: constant.numeric.date.month.beancount
+        4: punctuation.separator.beancount
+        5: constant.numeric.date.day.beancount
+      pop: true
+
+  string:
+    - match: '({{string}})'
+      comment: double-quoted string
+      captures:
+        1: string.quoted.double.beancount
+      pop: true
+
+  account:
+    - meta_scope: meta.account.beancount
+    - match: '({{accountroot}})'
+      captures:
+        1: meta.account.root.beancount constant.language.beancount
+      set:
+        - match: '(:)({{accountcomponent}}*)'
+          captures:
+            1: punctuation.separator.beancount
+            2: variable.account.beancount
+          scope: meta.account.beancount
+        - match: (?=\s)
+          pop: true
+
+  account_expected:
+    - include: account
+
+  link:
+    - match: '(\^)({{linkchars}}*)'
+      scope: meta.link.beancount
+      captures:
+        1: keyword.operator.link.beancount
+        2: markup.underline.link
+      pop: true
+
+  tag:
+    - match: '(#)({{tagchars}}*)'
+      scope: meta.tag.beancount
+      captures:
+        1: keyword.operator.tag.beancount
+        2: entity.name.tag.beancount
+      pop: true
+
+  number:
+    - meta_scope: meta.number.beancount constant.numeric.beancount
+    - match: '[+]?{{number}}'
+      pop: true
+    - match: '[-]{{number}}'
+      scope: meta.number.negative.beancount
+      pop: true
+
+  amount:
+    - match: '([+]?{{number}})\s+({{currency}})'
+      scope: meta.amount.beancount
+      captures:
+        1: meta.number.beancount constant.numeric.beancount
+        2: meta.currency.beancount storage.type.currency.beancount
+      pop: true
+    - match: '([-]{{number}})\s+({{currency}})'
+      scope: meta.amount.beancount
+      captures:
+        1: meta.number.negative.beancount constant.numeric.beancount
+        2: meta.currency.beancount storage.type.currency.beancount
+      pop: true
+
+  currency:
+    - match: '{{currency}}'
+      comment: commodity/currency
+      scope: meta.currency.beancount storage.type.currency.beancount
+      pop: true
+
+  currency_list:
+    - match: '{{currency}}'
+      comment: commodity/currency
+      scope: meta.currency.beancount storage.type.currency.beancount
+    - match: '\s*,\s*'
+    - match: '\n'
+      pop: true
+
+  cost:
+    - match: '{{'
+      set:
+        - include: cost_parameters
+        - match: '}}'
+          pop: true
+    - match: '{'
+      set:
+        - include: cost_parameters
+        - match: '}'
+          pop: true
+
+  cost_parameters:
+    - match: '(?={{amount}})'
+      push: amount
+    - match: '(?={{date}})'
+      push: date
+    - match: '(?={{string}})'
+      push: string
+
+  optional_cost:
+    - include: cost
+    - match: '\s*'
+    - match: ''
+      pop: true
+
+  price:
+    - match: '[@]{1,2}'
+      scope: keyword.operator.price.beancount
+      set: amount
+
+  optional_price:
+      - include: price
+      - match: '\s*'
+      - match: ''
+        pop: true

@@ -1,3 +1,17 @@
 {
-    "word_separators": "./\\()\"'-,.;<>~!@#$%^&*|+=[]{}`~?",
+  "word_separators": "./\\()\"'-,.:;<>~!@#$%^&*|+=[]{}`~?",
+  "auto_complete_triggers":
+  [
+          {
+                  "selector": "source.beancount meta.account.beancount",
+                  "characters": ":"
+          },
+          {
+                  "selector": "source.beancount meta.transaction.linkstags.beancount",
+                  "characters": "^#"
+          },
+  ],
+  "beancount_decimal_column": 73,
+  "beancount_currency_column": 78,
+  "beancount_debug": true
 }

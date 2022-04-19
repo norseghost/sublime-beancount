@@ -1,0 +1,10 @@
+[
+  {
+    "keys": ["tab"],
+    "command": "beancount_align_decimal",
+    "context": 
+    [
+      { "key": "selector", "operator": "equal", "operand": "source.beancount & (meta.amount.beancount - meta.metadata.value.beancount)" }
+    ]
+  },
+]
