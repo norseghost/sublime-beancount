@@ -354,14 +354,14 @@ contexts:
       scope: keyword.operator.arithmetic.beancount
       set: number_expr
     - match: '\('
-      scope: punctuation.section.group.begin.python
+      scope: punctuation.section.group.begin.beancount
       set: [number_expr_closing_bracket, number_expr]
     - match: ''
       pop: true
 
   number_expr_closing_bracket:
     - match: \)
-      scope: punctuation.section.group.end.python
+      scope: punctuation.section.group.end.beancount
       set: [number_expr_continuation]
     - include: illegal
 
