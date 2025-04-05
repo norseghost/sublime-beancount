@@ -257,15 +257,19 @@ contexts:
     - match: ''
       set:
         - meta_scope: meta.posting.beancount
-        - match: '(?={{account}}[ \t]+([+-]?{{number}}))'
-          push: [ optional_price, optional_cost, amount, account ]
-        - match: '(?={{account}}[ \t]*$)'
-          push: account
+        - match: '(?={{account}})'
+          push: [ optional_posting_leg_amount, account ]
         - match: '(?={{accountcomponent}})'
           comment: Partial account
           push: account
         - match: '(?=\n)'
           pop: true
+
+  optional_posting_leg_amount:
+    - match: '(?=[ \t]*[-+(0-9])'
+      set: [ optional_price, optional_cost, amount]
+    - match: ''
+      pop: true
 
   date:
     - match: '(\d{4})(-)(\d{2})(-)(\d{2})'
@@ -328,18 +332,39 @@ contexts:
       pop: true
 
   amount:
-    - match: '([+]?{{number}})\s+({{currency}})'
-      scope: meta.amount.beancount
-      captures:
-        1: meta.number.beancount constant.numeric.beancount
-        2: meta.currency.beancount storage.type.currency.beancount
+    - match: ''
+      set: [currency, number_expr]
+
+  number_expr:
+    # Implemented following https://github.com/beancount/beancount/blob/afb42d6b107db38fe087c8f6991a97fcdcabba37/beancount/parser/grammar.y#L316
+    - match: '[ \t]'
+    - match: '\('
+      scope: punctuation.section.group.begin.beancount
+      set: [number_expr_closing_bracket, number_expr]
+    - match: '[+-]*'
+      scope: keyword.operator.arithmetic.beancount
+    - match: '{{number}}'
+      scope: meta.number.beancount constant.numeric.beancount
+      set: number_expr_continuation
+    - include: illegal
+
+  number_expr_continuation:
+    - match: '[ \t]'
+    - match: '[+-/*]'
+      scope: keyword.operator.arithmetic.beancount
+      set: number_expr
+    - match: '\('
+      scope: punctuation.section.group.begin.beancount
+      set: [number_expr_closing_bracket, number_expr]
+    - match: ''
       pop: true
-    - match: '([-]{{number}})\s+({{currency}})'
-      scope: meta.amount.beancount
-      captures:
-        1: meta.number.negative.beancount constant.numeric.beancount
-        2: meta.currency.beancount storage.type.currency.beancount
-      pop: true
+
+  number_expr_closing_bracket:
+    - match: \)
+      scope: punctuation.section.group.end.beancount
+      set: [number_expr_continuation]
+    - include: illegal
+
 
   currency:
     - match: '{{currency}}'
