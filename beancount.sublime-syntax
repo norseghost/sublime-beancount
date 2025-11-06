@@ -258,7 +258,7 @@ contexts:
       set:
         - meta_scope: meta.posting.beancount
         - match: '(?={{account}})'
-          push: [ optional_posting_leg_amount, account ]
+          push: [ metadata, optional_posting_leg_amount, account ]
         - match: '(?={{accountcomponent}})'
           comment: Partial account
           push: account
@@ -364,7 +364,6 @@ contexts:
       scope: punctuation.section.group.end.beancount
       set: [number_expr_continuation]
     - include: illegal
-
 
   currency:
     - match: '{{currency}}'
