@@ -156,9 +156,9 @@ class BeancountAlignDecimalCommand(sublime_plugin.TextCommand):
 
 class BeancountInsertDateCommand(sublime_plugin.TextCommand):
     def run(self, edit):
-        for s in view.sel():
+        for s in self.view.sel():
             if s.empty():
-                view.insert(edit, s.a, time.strftime('%Y-%m-%d'))
+                self.view.insert(edit, s.a, time.strftime('%Y-%m-%d'))
             else:
-                view.replace(edit, s, time.strftime('%Y-%m-%d'))
+                self.view.replace(edit, s, time.strftime('%Y-%m-%d'))
 
