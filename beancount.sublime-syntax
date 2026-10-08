@@ -104,7 +104,7 @@ contexts:
       set:
       - meta_scope: meta.directive.balance.beancount
       - match: '(?={{account}}([ \t]+({{amount}})?)?)'
-        set: [metadata, amount, account]
+        set: [metadata, balance_amount, account]
       - match: '(?={{accountcomponent}})'
         comment: Partial account
         push: account
@@ -334,6 +334,19 @@ contexts:
   amount:
     - match: ''
       set: [currency, number_expr]
+
+  balance_amount:
+    # A balance amount may carry an explicit tolerance: `number_expr ~ number_expr currency`
+    - match: ''
+      set: [currency, tolerance, number_expr]
+
+  tolerance:
+    - match: '[ \t]*(~)'
+      captures:
+        1: keyword.operator.tolerance.beancount
+      set: number_expr
+    - match: ''
+      pop: true
 
   number_expr:
     # Implemented following https://github.com/beancount/beancount/blob/afb42d6b107db38fe087c8f6991a97fcdcabba37/beancount/parser/grammar.y#L316
